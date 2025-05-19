@@ -1,11 +1,16 @@
 package com.bootcamp.ws.infrastructure.inbound.mapper;
 
 import com.bootcamp.ws.domain.dto.request.TechnologyCreateDto;
+import com.bootcamp.ws.domain.dto.response.AssociateTechnologiesResponseDto;
 import com.bootcamp.ws.domain.dto.response.TechnologyCreateResponseDto;
 import com.bootcamp.ws.domain.dto.response.TechnologyResponseDto;
 import com.bootcamp.ws.domain.model.Technology;
+import com.bootcamp.ws.domain.model.TechnologyCapability;
+import com.bootcamp.ws.infrastructure.adapters.persistence.entity.TechnologyCapabilityEntity;
 import com.bootcamp.ws.infrastructure.adapters.persistence.entity.TechnologyEntity;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class TechnologyMapper {
@@ -30,5 +35,14 @@ public class TechnologyMapper {
                 .name(technology.getName())
                 .description(technology.getDescription())
                 .build();
+    }
+
+    public List<TechnologyCapability> toAssociateTechnologiesResponseDto(List<TechnologyCapabilityEntity> technologyCapabilityEntities) {
+        return technologyCapabilityEntities.stream()
+                .map(technologyCapabilityEntity -> TechnologyCapability.builder()
+                        .capabilityId(technologyCapabilityEntity.getCapabilityId())
+                        .technologyId(technologyCapabilityEntity.getTechnologyId())
+                        .build())
+                .toList();
     }
 }
