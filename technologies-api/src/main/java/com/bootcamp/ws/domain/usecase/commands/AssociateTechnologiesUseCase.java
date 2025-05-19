@@ -3,7 +3,7 @@ package com.bootcamp.ws.domain.usecase.commands;
 import com.bootcamp.ws.domain.api.TechnologyAdapterPort;
 import com.bootcamp.ws.domain.common.enums.TechnicalMessage;
 import com.bootcamp.ws.domain.common.exceptions.NoContentException;
-import com.bootcamp.ws.domain.dto.AssociateTechnologiesCreateDto;
+import com.bootcamp.ws.domain.dto.request.AssociateTechnologiesCreateDto;
 import com.bootcamp.ws.domain.spi.AssociateTechnologiesServicePort;
 import com.bootcamp.ws.infrastructure.adapters.persistence.entity.TechnologyCapabilityEntity;
 import lombok.RequiredArgsConstructor;

@@ -1,8 +1,8 @@
 package com.bootcamp.ws.infrastructure.inbound;
 
-import com.bootcamp.ws.domain.dto.AssociateTechnologiesCreateDto;
-import com.bootcamp.ws.domain.dto.ExistsTechnologiesDto;
-import com.bootcamp.ws.domain.dto.TechnologyCreateDto;
+import com.bootcamp.ws.domain.dto.request.AssociateTechnologiesCreateDto;
+import com.bootcamp.ws.domain.dto.request.ExistsTechnologiesDto;
+import com.bootcamp.ws.domain.dto.request.TechnologyCreateDto;
 import com.bootcamp.ws.infrastructure.inbound.handler.TechnologyHandler;
 import org.springdoc.core.annotations.RouterOperation;
 import org.springdoc.core.annotations.RouterOperations;

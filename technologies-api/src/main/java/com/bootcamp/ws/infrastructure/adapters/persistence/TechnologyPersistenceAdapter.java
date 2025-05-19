@@ -2,8 +2,8 @@ package com.bootcamp.ws.infrastructure.adapters.persistence;
 
 import com.bootcamp.ws.domain.common.exceptions.BusinessException;
 import com.bootcamp.ws.domain.common.exceptions.NoContentException;
-import com.bootcamp.ws.domain.dto.AssociateTechnologiesCreateDto;
-import com.bootcamp.ws.domain.dto.ExistsTechnologiesDto;
+import com.bootcamp.ws.domain.dto.request.AssociateTechnologiesCreateDto;
+import com.bootcamp.ws.domain.dto.request.ExistsTechnologiesDto;
 import com.bootcamp.ws.domain.api.TechnologyAdapterPort;
 import com.bootcamp.ws.infrastructure.adapters.persistence.entity.TechnologyCapabilityEntity;
 import com.bootcamp.ws.infrastructure.adapters.persistence.entity.TechnologyEntity;

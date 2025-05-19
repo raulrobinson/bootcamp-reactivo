@@ -1,4 +1,4 @@
-package com.bootcamp.ws.domain.dto;
+package com.bootcamp.ws.domain.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;

@@ -3,14 +3,13 @@ package com.bootcamp.ws.infrastructure.inbound.handler;
 import com.bootcamp.ws.domain.common.ErrorDto;
 import com.bootcamp.ws.domain.common.exceptions.BusinessException;
 import com.bootcamp.ws.domain.common.exceptions.ProcessorException;
-import com.bootcamp.ws.domain.dto.AssociateTechnologiesCreateDto;
-import com.bootcamp.ws.domain.dto.ExistsTechnologiesDto;
-import com.bootcamp.ws.domain.dto.TechnologyCreateDto;
+import com.bootcamp.ws.domain.dto.request.AssociateTechnologiesCreateDto;
+import com.bootcamp.ws.domain.dto.request.ExistsTechnologiesDto;
+import com.bootcamp.ws.domain.dto.request.TechnologyCreateDto;
 import com.bootcamp.ws.domain.spi.AssociateTechnologiesServicePort;
 import com.bootcamp.ws.domain.spi.CreateTechnologyServicePort;
 import com.bootcamp.ws.domain.spi.ExistsTechnologiesServicePort;
-import com.bootcamp.ws.infrastructure.adapters.persistence.mapper.TechnologyEntityMapper;
-import com.bootcamp.ws.domain.api.TechnologyAdapterPort;
+import com.bootcamp.ws.infrastructure.inbound.mapper.TechnologyMapper;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +35,7 @@ public class TechnologyHandler {
     private final AssociateTechnologiesServicePort associateTechnologiesServicePort;
     private final ExistsTechnologiesServicePort existsTechnologiesServicePort;
 
-    private final TechnologyEntityMapper mapper;
+    private final TechnologyMapper mapper;
 
     public Mono<ServerResponse> createTechnology(ServerRequest request) {
         return request.bodyToMono(TechnologyCreateDto.class)
