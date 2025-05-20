@@ -55,6 +55,10 @@ This project is designed to be modular and can be easily split into microservice
 - Unit Test
 - Integration Test
 
+### Tecnologías API Management
+
+![flow-tecnologias-api-servicio.png](flow-tecnologias-api-servicio.png)
+
 ### Author
 
 - **[Raul Bolivar Navas](https://github.com/raulrobinson/reto-backend-reactivo)**
