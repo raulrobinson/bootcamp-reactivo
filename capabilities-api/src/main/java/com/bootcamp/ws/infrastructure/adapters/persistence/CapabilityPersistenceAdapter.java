@@ -44,9 +44,11 @@ public class CapabilityPersistenceAdapter implements CapabilityPersistenceAdapte
 
     @Override
     public Mono<Capability> createCapability(Capability request) {
+
         ExistsTechnologiesDto technologiesIds = ExistsTechnologiesDto.builder()
                 .technologiesIds(request.getTechnologyIds())
                 .build();
+
         return technologyExternalAdapterPort.existsTechnologies(technologiesIds)
                 .switchIfEmpty(Mono.error(new ValidationException(TechnicalMessage.INVALID_REQUEST)))
                 .flatMap(validas -> {

@@ -4,17 +4,18 @@ import com.bootcamp.ws.domain.api.CapabilityPersistenceAdapterPort;
 import com.bootcamp.ws.domain.api.TechnologyExternalAdapterPort;
 import com.bootcamp.ws.domain.common.enums.TechnicalMessage;
 import com.bootcamp.ws.domain.common.exceptions.BusinessException;
-import com.bootcamp.ws.domain.common.exceptions.ValidationException;
+import com.bootcamp.ws.domain.dto.request.CapabilityCreateDto;
+import com.bootcamp.ws.domain.dto.response.CapabilityResponseDto;
 import com.bootcamp.ws.domain.model.Capability;
 import com.bootcamp.ws.domain.spi.CreateCapabilityServicePort;
-import com.bootcamp.ws.infrastructure.adapters.outbound.dto.ExistsTechnologiesDto;
-import com.bootcamp.ws.infrastructure.adapters.outbound.model.TechnologyAssociateTechnologies;
-import com.bootcamp.ws.infrastructure.adapters.persistence.mapper.CapabilityEntityMapper;
+import com.bootcamp.ws.infrastructure.inbound.mapper.CapabilityMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.reactive.TransactionalOperator;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -25,10 +26,10 @@ public class CreateCapabilityUseCase implements CreateCapabilityServicePort {
 
     private final CapabilityPersistenceAdapterPort capabilityPersistenceAdapterPort;
     private final TechnologyExternalAdapterPort technologyExternalAdapterPort;
-    private final CapabilityEntityMapper mapper;
+    private final CapabilityMapper mapper;
 
     @Override
-    public Mono<Capability> createCapability(Capability request) {
+    public Mono<CapabilityResponseDto> createCapability(CapabilityCreateDto request) {
 //        ExistsTechnologiesDto technologiesIds = ExistsTechnologiesDto.builder()
 //                .technologiesIds(request.getTechnologyIds())
 //                .build();
@@ -60,7 +61,11 @@ public class CreateCapabilityUseCase implements CreateCapabilityServicePort {
 //                            //.map(mapper::toCapabilityDomainFromEntity);
 //                }).as(tx::transactional);
 
-        return capabilityPersistenceAdapterPort.createCapability(request)
+        // Paso 1: Obtener IDs de tecnologías del request
+        List<Long> technologyIds = request.getTechnologyIds();
+        Capability capabilityRequest = Capability.builder().build();
+
+        return mapper.toDtoFromDomain(capabilityPersistenceAdapterPort.createCapability(request))
                 .switchIfEmpty(Mono.error(new BusinessException(TechnicalMessage.BAD_REQUEST)));
     }
 }
