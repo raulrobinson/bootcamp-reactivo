@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CapabilityWithTechnologiesDto {
+public class CapabilityWithTechnologiesResponseDto {
     private Long capabilityId;
     private List<Long> technologiesIds;
 }

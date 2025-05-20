@@ -2,7 +2,7 @@ package com.bootcamp.ws.domain.usecase.queries;
 
 import com.bootcamp.ws.domain.api.TechnologyAdapterPort;
 import com.bootcamp.ws.domain.common.exceptions.NoContentException;
-import com.bootcamp.ws.domain.dto.request.ExistsTechnologiesDto;
+import com.bootcamp.ws.domain.dto.request.ExistsTechnologiesRequestDto;
 import com.bootcamp.ws.domain.dto.response.TechnologyResponseDto;
 import com.bootcamp.ws.domain.model.Technology;
 import com.bootcamp.ws.infrastructure.inbound.mapper.TechnologyMapper;
@@ -38,7 +38,7 @@ class ExistsTechnologiesUseCaseTest {
     void existsTechnologies_shouldReturnResponseDtoList_whenTechnologiesExist() {
         // Arrange
         List<Long> ids = List.of(1L, 2L);
-        ExistsTechnologiesDto dto = ExistsTechnologiesDto.builder().technologiesIds(ids).build();
+        ExistsTechnologiesRequestDto dto = ExistsTechnologiesRequestDto.builder().technologiesIds(ids).build();
 
         Technology tech1 = Technology.builder().id(1L).name("Java").description("Java Tech").build();
         TechnologyResponseDto responseDto1 = TechnologyResponseDto.builder()
@@ -62,7 +62,7 @@ class ExistsTechnologiesUseCaseTest {
     void existsTechnologies_shouldThrowNoContentException_whenNoTechnologiesFound() {
         // Arrange
         List<Long> ids = List.of(99L);
-        ExistsTechnologiesDto dto = ExistsTechnologiesDto.builder().technologiesIds(ids).build();
+        ExistsTechnologiesRequestDto dto = ExistsTechnologiesRequestDto.builder().technologiesIds(ids).build();
 
         when(technologyAdapterPort.existsTechnologies(dto)).thenReturn(Flux.empty());
 

@@ -3,10 +3,10 @@ package com.bootcamp.ws.infrastructure.inbound.handler;
 import com.bootcamp.ws.domain.common.ErrorDto;
 import com.bootcamp.ws.domain.common.exceptions.BusinessException;
 import com.bootcamp.ws.domain.common.exceptions.ProcessorException;
-import com.bootcamp.ws.domain.dto.request.AssociateTechnologiesCreateDto;
-import com.bootcamp.ws.domain.dto.request.ExistsTechnologiesDto;
+import com.bootcamp.ws.domain.dto.request.AssociateTechnologiesCreateRequestDto;
+import com.bootcamp.ws.domain.dto.request.ExistsTechnologiesRequestDto;
 import com.bootcamp.ws.domain.dto.request.TechnologiesByIdsRequestDto;
-import com.bootcamp.ws.domain.dto.request.TechnologyCreateDto;
+import com.bootcamp.ws.domain.dto.request.TechnologyCreateRequestDto;
 import com.bootcamp.ws.domain.spi.*;
 import com.bootcamp.ws.infrastructure.inbound.mapper.TechnologyMapper;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -39,8 +39,8 @@ public class TechnologyHandler {
     private final TechnologyMapper mapper;
 
     public Mono<ServerResponse> createTechnology(ServerRequest request) {
-        return request.bodyToMono(TechnologyCreateDto.class)
-                .flatMap(technology -> createTechnologyServicePort.createTechnology(mapper.toTechnologyEntityFromDto(technology)))
+        return request.bodyToMono(TechnologyCreateRequestDto.class)
+                .flatMap(createTechnologyServicePort::createTechnology)
                 .flatMap(technology -> ServerResponse.ok().bodyValue(technology))
                 .doOnError(error -> log.error(CREATE_ERROR, error.getMessage()))
                 .onErrorResume(BusinessException.class, ex -> buildErrorResponse(
@@ -54,7 +54,7 @@ public class TechnologyHandler {
     }
 
     public Mono<ServerResponse> existsTechnologies(ServerRequest request) {
-        return request.bodyToMono(ExistsTechnologiesDto.class)
+        return request.bodyToMono(ExistsTechnologiesRequestDto.class)
                 .flatMapMany(existsTechnologiesServicePort::existsTechnologies)
                 .collectList()
                 .flatMap(technologies -> {
@@ -74,37 +74,37 @@ public class TechnologyHandler {
                 );
     }
 
-    public Mono<ServerResponse> associateTechnologies(ServerRequest request) {
-        return request.bodyToMono(AssociateTechnologiesCreateDto.class)
-                .flatMap(associateTechnologiesServicePort::associateTechnologies)
-                .flatMap(resultList -> ServerResponse.ok().bodyValue(resultList))
-                .doOnError(error -> log.error(CREATE_ERROR, error.getMessage()))
-                .onErrorResume(BusinessException.class, ex -> buildErrorResponse(
-                        HttpStatus.BAD_REQUEST,
-                        ex.getTechnicalMessage(),
-                        List.of(ErrorDto.builder()
-                                .code(ex.getTechnicalMessage().getCode())
-                                .message(ex.getTechnicalMessage().getMessage())
-                                .parameter(ex.getTechnicalMessage().getParameter())
-                                .build())
-                ));
-    }
-
-    public Mono<ServerResponse> findAssociatesTechsByCapId(ServerRequest request) {
-        Long capabilityId = Long.parseLong(request.pathVariable("capabilityId"));
-        return findAssociatesTechsByCapIdServicePort.findAssociatesTechsByCapId(capabilityId)
-                .flatMap(technology -> ServerResponse.ok().bodyValue(technology))
-                .doOnError(error -> log.error(RESOURCE_ERROR, error.getMessage()))
-                .onErrorResume(BusinessException.class, ex -> buildErrorResponse(
-                        HttpStatus.BAD_REQUEST,
-                        ex.getTechnicalMessage(),
-                        List.of(ErrorDto.builder()
-                                .code(ex.getTechnicalMessage().getCode())
-                                .message(ex.getTechnicalMessage().getMessage())
-                                .parameter(ex.getTechnicalMessage().getParameter())
-                                .build())
-                ));
-    }
+//    public Mono<ServerResponse> associateTechnologies(ServerRequest request) {
+//        return request.bodyToMono(AssociateTechnologiesCreateRequestDto.class)
+//                .flatMap(associateTechnologiesServicePort::associateTechnologies)
+//                .flatMap(resultList -> ServerResponse.ok().bodyValue(resultList))
+//                .doOnError(error -> log.error(CREATE_ERROR, error.getMessage()))
+//                .onErrorResume(BusinessException.class, ex -> buildErrorResponse(
+//                        HttpStatus.BAD_REQUEST,
+//                        ex.getTechnicalMessage(),
+//                        List.of(ErrorDto.builder()
+//                                .code(ex.getTechnicalMessage().getCode())
+//                                .message(ex.getTechnicalMessage().getMessage())
+//                                .parameter(ex.getTechnicalMessage().getParameter())
+//                                .build())
+//                ));
+//    }
+//
+//    public Mono<ServerResponse> findAssociatesTechsByCapId(ServerRequest request) {
+//        Long capabilityId = Long.parseLong(request.pathVariable("capabilityId"));
+//        return findAssociatesTechsByCapIdServicePort.findAssociatesTechsByCapId(capabilityId)
+//                .flatMap(technology -> ServerResponse.ok().bodyValue(technology))
+//                .doOnError(error -> log.error(RESOURCE_ERROR, error.getMessage()))
+//                .onErrorResume(BusinessException.class, ex -> buildErrorResponse(
+//                        HttpStatus.BAD_REQUEST,
+//                        ex.getTechnicalMessage(),
+//                        List.of(ErrorDto.builder()
+//                                .code(ex.getTechnicalMessage().getCode())
+//                                .message(ex.getTechnicalMessage().getMessage())
+//                                .parameter(ex.getTechnicalMessage().getParameter())
+//                                .build())
+//                ));
+//    }
 
     public Mono<ServerResponse> findTechnologiesByIds(ServerRequest request) {
         return request.bodyToMono(TechnologiesByIdsRequestDto.class)

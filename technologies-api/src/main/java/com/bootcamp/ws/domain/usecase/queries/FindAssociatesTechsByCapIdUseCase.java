@@ -3,7 +3,7 @@ package com.bootcamp.ws.domain.usecase.queries;
 import com.bootcamp.ws.domain.api.TechnologyAdapterPort;
 import com.bootcamp.ws.domain.common.enums.TechnicalMessage;
 import com.bootcamp.ws.domain.common.exceptions.NotFoundException;
-import com.bootcamp.ws.domain.dto.response.CapabilityWithTechnologiesDto;
+import com.bootcamp.ws.domain.dto.response.CapabilityWithTechnologiesResponseDto;
 import com.bootcamp.ws.domain.model.TechnologyCapability;
 import com.bootcamp.ws.domain.spi.FindAssociatesTechsByCapIdServicePort;
 import lombok.RequiredArgsConstructor;
@@ -19,13 +19,13 @@ public class FindAssociatesTechsByCapIdUseCase implements FindAssociatesTechsByC
 
     private final TechnologyAdapterPort technologyAdapterPort;
 
-    @Override
-    public Mono<CapabilityWithTechnologiesDto> findAssociatesTechsByCapId(Long capabilityId) {
-        return technologyAdapterPort.findAllByCapabilityId(capabilityId)
-                .flatMap(list -> groupTechnologiesByCapability(list, capabilityId));
-    }
+//    @Override
+//    public Mono<CapabilityWithTechnologiesResponseDto> findAssociatesTechsByCapId(Long capabilityId) {
+//        return technologyAdapterPort.findAllByCapabilityId(capabilityId)
+//                .flatMap(list -> groupTechnologiesByCapability(list, capabilityId));
+//    }
 
-    public Mono<CapabilityWithTechnologiesDto> groupTechnologiesByCapability(List<TechnologyCapability> input, Long capabilityId) {
+    public Mono<CapabilityWithTechnologiesResponseDto> groupTechnologiesByCapability(List<TechnologyCapability> input, Long capabilityId) {
         if (input == null || input.isEmpty()) {
             return Mono.error(new NotFoundException(TechnicalMessage.NOT_FOUND, capabilityId.toString()));
         }
@@ -36,7 +36,7 @@ public class FindAssociatesTechsByCapIdUseCase implements FindAssociatesTechsByC
                 .map(TechnologyCapability::getTechnologyId)
                 .collect(Collectors.toList());
 
-        CapabilityWithTechnologiesDto result = CapabilityWithTechnologiesDto.builder()
+        CapabilityWithTechnologiesResponseDto result = CapabilityWithTechnologiesResponseDto.builder()
                 .capabilityId(capId)
                 .technologiesIds(technologyIds)
                 .build();

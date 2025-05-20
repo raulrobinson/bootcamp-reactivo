@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(description = "Request DTO for Technology", title = "Request Technology DTO")
-public class TechnologyCreateDto {
+public class TechnologyCreateRequestDto {
 
     @Schema(description = "Name of the technology", example = "Java")
     private String name;

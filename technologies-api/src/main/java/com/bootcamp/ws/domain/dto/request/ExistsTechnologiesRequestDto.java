@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(description = "Request DTO for technologies by IDs", title = "Technologies by IDs Request DTO")
-public class ExistsTechnologiesDto {
+public class ExistsTechnologiesRequestDto {
     @Schema(description = "List of technology IDs", example = "[1, 2, 3]")
     private List<Long> technologiesIds;
 }

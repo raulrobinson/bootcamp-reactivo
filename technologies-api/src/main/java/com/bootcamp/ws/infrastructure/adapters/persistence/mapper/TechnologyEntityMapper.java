@@ -1,5 +1,6 @@
 package com.bootcamp.ws.infrastructure.adapters.persistence.mapper;
 
+import com.bootcamp.ws.domain.dto.request.TechnologyCreateRequestDto;
 import com.bootcamp.ws.domain.model.TechnologyCapability;
 import com.bootcamp.ws.infrastructure.adapters.persistence.entity.TechnologyCapabilityEntity;
 import com.bootcamp.ws.infrastructure.adapters.persistence.entity.TechnologyEntity;
@@ -33,4 +34,11 @@ public class TechnologyEntityMapper {
                         .toList());
     }
 
+    public TechnologyEntity toEntityFromDto(TechnologyCreateRequestDto requestDto) {
+        if (requestDto == null) return null;
+        return TechnologyEntity.builder()
+                .name(requestDto.getName().toLowerCase())
+                .description(requestDto.getDescription())
+                .build();
+    }
 }
