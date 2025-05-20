@@ -5,11 +5,9 @@ import com.bootcamp.ws.domain.common.exceptions.BusinessException;
 import com.bootcamp.ws.domain.common.exceptions.ProcessorException;
 import com.bootcamp.ws.domain.dto.request.AssociateTechnologiesCreateDto;
 import com.bootcamp.ws.domain.dto.request.ExistsTechnologiesDto;
+import com.bootcamp.ws.domain.dto.request.TechnologiesByIdsRequestDto;
 import com.bootcamp.ws.domain.dto.request.TechnologyCreateDto;
-import com.bootcamp.ws.domain.spi.AssociateTechnologiesServicePort;
-import com.bootcamp.ws.domain.spi.CreateTechnologyServicePort;
-import com.bootcamp.ws.domain.spi.ExistsTechnologiesServicePort;
-import com.bootcamp.ws.domain.spi.FindAssociatesTechsByCapIdServicePort;
+import com.bootcamp.ws.domain.spi.*;
 import com.bootcamp.ws.infrastructure.inbound.mapper.TechnologyMapper;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +34,7 @@ public class TechnologyHandler {
     private final AssociateTechnologiesServicePort associateTechnologiesServicePort;
     private final ExistsTechnologiesServicePort existsTechnologiesServicePort;
     private final FindAssociatesTechsByCapIdServicePort findAssociatesTechsByCapIdServicePort;
+    private final FindTechnologiesByIdsServicePort findTechnologiesByIdsServicePort;
 
     private final TechnologyMapper mapper;
 
@@ -105,5 +104,30 @@ public class TechnologyHandler {
                                 .parameter(ex.getTechnicalMessage().getParameter())
                                 .build())
                 ));
+    }
+
+    public Mono<ServerResponse> findTechnologiesByIds(ServerRequest request) {
+        return request.bodyToMono(TechnologiesByIdsRequestDto.class)
+                .flatMapMany(dto -> findTechnologiesByIdsServicePort
+                        .findTechnologiesByIds(dto.getTechnologiesIds()))
+                .collectList()
+                .flatMap(technologies -> {
+                    if (technologies.isEmpty()) {
+                        return ServerResponse.noContent().build(); // 204 No Content
+                    }
+                    return ServerResponse.ok().bodyValue(technologies); // 200 OK con lista
+                })
+                .doOnError(error -> log.error(RESOURCE_ERROR, error.getMessage()))
+                .onErrorResume(BusinessException.class, ex ->
+                        buildErrorResponse(
+                                HttpStatus.BAD_REQUEST,
+                                ex.getTechnicalMessage(),
+                                List.of(ErrorDto.builder()
+                                        .code(ex.getTechnicalMessage().getCode())
+                                        .message(ex.getTechnicalMessage().getMessage())
+                                        .parameter(ex.getTechnicalMessage().getParameter())
+                                        .build())
+                        )
+                );
     }
 }

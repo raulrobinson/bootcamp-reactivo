@@ -19,4 +19,6 @@ public interface TechnologyAdapterPort {
     Mono<List<TechnologyCapabilityEntity>> associateTechnologies(AssociateTechnologiesCreateDto dto);
 
     Mono<List<TechnologyCapability>> findAllByCapabilityId(Long capabilityId);
+
+    Flux<Technology> findTechnologiesByIds(List<Long> technologiesIds);
 }
