@@ -1,6 +1,6 @@
 package com.bootcamp.ws.infrastructure.inbound;
 
-import com.bootcamp.ws.domain.dto.CapabilityCreateDto;
+import com.bootcamp.ws.domain.dto.request.CapabilityCreateDto;
 import com.bootcamp.ws.infrastructure.inbound.handler.CapabilityHandler;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
