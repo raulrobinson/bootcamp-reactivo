@@ -5,7 +5,6 @@ import com.bootcamp.ws.domain.common.enums.TechnicalMessage;
 import com.bootcamp.ws.domain.common.exceptions.NoContentException;
 import com.bootcamp.ws.domain.dto.request.ExistsTechnologiesDto;
 import com.bootcamp.ws.domain.dto.response.TechnologyResponseDto;
-import com.bootcamp.ws.domain.model.Technology;
 import com.bootcamp.ws.domain.spi.ExistsTechnologiesServicePort;
 import com.bootcamp.ws.infrastructure.inbound.mapper.TechnologyMapper;
 import lombok.RequiredArgsConstructor;
