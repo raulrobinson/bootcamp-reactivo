@@ -1,4 +1,4 @@
-package com.bootcamp.ws.application.config;
+package com.bootcamp.ws.infrastructure.config;
 
 import com.bootcamp.ws.domain.api.CapabilityPersistenceAdapterPort;
 import com.bootcamp.ws.domain.api.TechnologyExternalAdapterPort;

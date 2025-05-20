@@ -23,7 +23,9 @@ public class ExistsCapabilitiesUseCase implements ExistsCapabilitiesServicePort 
 
     @Override
     public Flux<Capability> existsCapabilities(List<Long> req) {
-        return capabilityPersistenceAdapterPort.findAllById(req)
+//        capabilityPersistenceAdapterPort.findAssociatesTechsByCapId(1L);
+
+        return capabilityPersistenceAdapterPort.findAllCapabilitiesByIds(req)
                 .switchIfEmpty(Mono.error(new NoContentException(TechnicalMessage.NO_CONTENT)));
     }
 }
