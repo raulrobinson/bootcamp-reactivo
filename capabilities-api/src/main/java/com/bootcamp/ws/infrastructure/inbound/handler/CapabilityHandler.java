@@ -40,7 +40,7 @@ public class CapabilityHandler {
 
     public Mono<ServerResponse> createCapability(ServerRequest request) {
         return request.bodyToMono(CapabilityCreateDto.class)
-                .flatMap(technology -> createCapabilityServicePort.createCapability(technology))
+                .flatMap(createCapabilityServicePort::createCapability)
                 .flatMap(technology -> ServerResponse.ok().bodyValue(technology))
                 .doOnError(error -> log.error(CREATE_ERROR, error.getMessage()))
                 .onErrorResume(BusinessException.class, ex -> buildErrorResponse(

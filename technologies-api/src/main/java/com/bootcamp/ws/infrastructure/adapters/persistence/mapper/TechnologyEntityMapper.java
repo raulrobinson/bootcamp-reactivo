@@ -1,5 +1,6 @@
 package com.bootcamp.ws.infrastructure.adapters.persistence.mapper;
 
+import com.bootcamp.ws.domain.dto.request.TechnologyCreateRequestDto;
 import com.bootcamp.ws.domain.model.TechnologyCapability;
 import com.bootcamp.ws.infrastructure.adapters.persistence.entity.TechnologyCapabilityEntity;
 import com.bootcamp.ws.infrastructure.adapters.persistence.entity.TechnologyEntity;
@@ -14,6 +15,7 @@ import java.util.List;
 public class TechnologyEntityMapper {
 
     public Technology toDomainFromEntity(TechnologyEntity entity) {
+        if (entity == null) return null;
         return Technology.builder()
                 .id(entity.getId())
                 .name(entity.getName())
@@ -24,6 +26,7 @@ public class TechnologyEntityMapper {
     }
 
     public Mono<List<TechnologyCapability>> toMonoTechnologyCapabilityListFromFluxEntities(Flux<TechnologyCapabilityEntity> entities) {
+        if (entities == null) return null;
         return entities.collectList()
                 .map(entityList -> entityList.stream()
                         .map(entity -> TechnologyCapability.builder()
@@ -33,4 +36,19 @@ public class TechnologyEntityMapper {
                         .toList());
     }
 
+    public TechnologyEntity toEntityFromDto(TechnologyCreateRequestDto requestDto) {
+        if (requestDto == null) return null;
+        return TechnologyEntity.builder()
+                .name(requestDto.getName().toLowerCase())
+                .description(requestDto.getDescription())
+                .build();
+    }
+
+    public Mono<List<TechnologyCapability>> toDomainsFromEntities(Mono<List<TechnologyCapabilityEntity>> listMono) {
+        if (listMono == null) return null;
+        return listMono.flatMap(entities -> {
+            if (entities == null) return Mono.empty();
+            return toMonoTechnologyCapabilityListFromFluxEntities(Flux.fromIterable(entities));
+        });
+    }
 }

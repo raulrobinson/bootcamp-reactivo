@@ -2,34 +2,29 @@ package com.bootcamp.ws.domain.usecase.commands;
 
 import com.bootcamp.ws.domain.api.CapabilityPersistenceAdapterPort;
 import com.bootcamp.ws.domain.api.TechnologyExternalAdapterPort;
-import com.bootcamp.ws.domain.common.enums.TechnicalMessage;
-import com.bootcamp.ws.domain.common.exceptions.BusinessException;
 import com.bootcamp.ws.domain.dto.request.CapabilityCreateDto;
 import com.bootcamp.ws.domain.dto.response.CapabilityResponseDto;
-import com.bootcamp.ws.domain.model.Capability;
+import com.bootcamp.ws.domain.mapper.CapabilityDomainMapper;
 import com.bootcamp.ws.domain.spi.CreateCapabilityServicePort;
-import com.bootcamp.ws.infrastructure.inbound.mapper.CapabilityMapper;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.reactive.TransactionalOperator;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
-
-@Slf4j
-@Service
-@RequiredArgsConstructor
 public class CreateCapabilityUseCase implements CreateCapabilityServicePort {
-
-    private final TransactionalOperator tx;
 
     private final CapabilityPersistenceAdapterPort capabilityPersistenceAdapterPort;
     private final TechnologyExternalAdapterPort technologyExternalAdapterPort;
-    private final CapabilityMapper mapper;
+    private final CapabilityDomainMapper mapper;
+
+    public CreateCapabilityUseCase(CapabilityPersistenceAdapterPort capabilityPersistenceAdapterPort, TechnologyExternalAdapterPort technologyExternalAdapterPort, CapabilityDomainMapper mapper) {
+        this.capabilityPersistenceAdapterPort = capabilityPersistenceAdapterPort;
+        this.technologyExternalAdapterPort = technologyExternalAdapterPort;
+        this.mapper = mapper;
+    }
 
     @Override
     public Mono<CapabilityResponseDto> createCapability(CapabilityCreateDto request) {
+
+        return null;
+
 //        ExistsTechnologiesDto technologiesIds = ExistsTechnologiesDto.builder()
 //                .technologiesIds(request.getTechnologyIds())
 //                .build();
@@ -61,11 +56,11 @@ public class CreateCapabilityUseCase implements CreateCapabilityServicePort {
 //                            //.map(mapper::toCapabilityDomainFromEntity);
 //                }).as(tx::transactional);
 
-        // Paso 1: Obtener IDs de tecnologías del request
-        List<Long> technologyIds = request.getTechnologyIds();
-        Capability capabilityRequest = Capability.builder().build();
-
-        return mapper.toDtoFromDomain(capabilityPersistenceAdapterPort.createCapability(request))
-                .switchIfEmpty(Mono.error(new BusinessException(TechnicalMessage.BAD_REQUEST)));
+//        // Paso 1: Obtener IDs de tecnologías del request
+//        List<Long> technologyIds = request.getTechnologyIds();
+//        Capability capabilityRequest = Capability.builder().build();
+//
+//        return mapper.toDtoFromDomain(capabilityPersistenceAdapterPort.createCapability(request))
+//                .switchIfEmpty(Mono.error(new BusinessException(TechnicalMessage.BAD_REQUEST)));
     }
 }

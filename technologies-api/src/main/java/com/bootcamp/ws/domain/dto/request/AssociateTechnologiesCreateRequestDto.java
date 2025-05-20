@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(description = "Request DTO for Associate Technologies", title = "Request Associate Technologies DTO")
-public class AssociateTechnologiesCreateDto {
+public class AssociateTechnologiesCreateRequestDto {
     @Schema(description = "Technology ID", example = "1")
     private Long capabilityId;
 

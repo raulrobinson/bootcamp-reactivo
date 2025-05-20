@@ -45,36 +45,38 @@ public class CapabilityPersistenceAdapter implements CapabilityPersistenceAdapte
     @Override
     public Mono<Capability> createCapability(Capability request) {
 
-        ExistsTechnologiesDto technologiesIds = ExistsTechnologiesDto.builder()
-                .technologiesIds(request.getTechnologyIds())
-                .build();
+        return null;
 
-        return technologyExternalAdapterPort.existsTechnologies(technologiesIds)
-                .switchIfEmpty(Mono.error(new ValidationException(TechnicalMessage.INVALID_REQUEST)))
-                .flatMap(validas -> {
-
-                    // Paso 2: Crear entidad de dominio
-                    Capability capability = Capability.builder()
-                            .name(request.getName())
-                            .description(request.getDescription())
-                            .technologyIds(request.getTechnologyIds())
-                            .build();
-
-                    // Paso 3: Guardar la capacidad
-                    return capabilityRepository.save(mapper.toCapabilityEntityFromDomain(capability))
-                            .flatMap(savedCap -> {
-
-                                // Paso 4: Asociar tecnologías con la capacidad
-                                TechnologyAssociateTechnologies associateRequest = TechnologyAssociateTechnologies.builder()
-                                        .capabilityId(savedCap.getId())
-                                        .technologiesIds(request.getTechnologyIds())
-                                        .build();
-
-                                return technologyExternalAdapterPort.associateTechnologies(associateRequest)
-                                        .thenReturn(savedCap);
-                            })
-                            .map(mapper::toCapabilityDomainFromEntity);
-                }).as(tx::transactional);
+//        ExistsTechnologiesDto technologiesIds = ExistsTechnologiesDto.builder()
+//                .technologiesIds(request.getTechnologyIds())
+//                .build();
+//
+//        return technologyExternalAdapterPort.existsTechnologies(technologiesIds)
+//                .switchIfEmpty(Mono.error(new ValidationException(TechnicalMessage.INVALID_REQUEST)))
+//                .flatMap(validas -> {
+//
+//                    // Paso 2: Crear entidad de dominio
+//                    Capability capability = Capability.builder()
+//                            .name(request.getName())
+//                            .description(request.getDescription())
+//                            .technologyIds(request.getTechnologyIds())
+//                            .build();
+//
+//                    // Paso 3: Guardar la capacidad
+//                    return capabilityRepository.save(mapper.toCapabilityEntityFromDomain(capability))
+//                            .flatMap(savedCap -> {
+//
+//                                // Paso 4: Asociar tecnologías con la capacidad
+//                                TechnologyAssociateTechnologies associateRequest = TechnologyAssociateTechnologies.builder()
+//                                        .capabilityId(savedCap.getId())
+//                                        .technologiesIds(request.getTechnologyIds())
+//                                        .build();
+//
+//                                return technologyExternalAdapterPort.associateTechnologies(associateRequest)
+//                                        .thenReturn(savedCap);
+//                            })
+//                            .map(mapper::toCapabilityDomainFromEntity);
+//                }).as(tx::transactional);
 
 //        return capabilityRepository.save(mapper.toCapabilityEntityFromDomain(request))
 //                .map(mapper::toCapabilityDomainFromEntity);
