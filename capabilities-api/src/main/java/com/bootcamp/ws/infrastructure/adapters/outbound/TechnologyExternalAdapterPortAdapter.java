@@ -3,6 +3,7 @@ package com.bootcamp.ws.infrastructure.adapters.outbound;
 import com.bootcamp.ws.domain.api.TechnologyExternalAdapterPort;
 import com.bootcamp.ws.domain.common.enums.TechnicalMessage;
 import com.bootcamp.ws.domain.common.exceptions.ProcessorException;
+import com.bootcamp.ws.infrastructure.adapters.outbound.dto.CapabilityWithTechnologiesDto;
 import com.bootcamp.ws.infrastructure.adapters.outbound.dto.ExistsTechnologiesDto;
 import com.bootcamp.ws.infrastructure.adapters.outbound.dto.TechnologyDto;
 import com.bootcamp.ws.infrastructure.adapters.outbound.model.TechnologyAssociateTechnologies;
@@ -25,7 +26,6 @@ public class TechnologyExternalAdapterPortAdapter implements TechnologyExternalA
 
     @Override
     public Mono<List<TechnologyDto>> existsTechnologies(ExistsTechnologiesDto dto) {
-        System.out.println("ids external body: = " + dto);
         return client.post()
                 .uri(serviceUrl + "/exists")
                 .bodyValue(dto)
@@ -43,6 +43,15 @@ public class TechnologyExternalAdapterPortAdapter implements TechnologyExternalA
                 .retrieve()
                 .bodyToFlux(TechnologyCapability.class)
                 .collectList()
+                .onErrorResume(throwable -> Mono.error(new ProcessorException(throwable, TechnicalMessage.INTERNAL_ERROR_IN_ADAPTERS)));
+    }
+
+    @Override
+    public Mono<CapabilityWithTechnologiesDto> findAssociatesTechsByCapId(Long capabilityId) {
+        return client.get()
+                .uri(serviceUrl + "/capabilities/{capabilityId}", capabilityId)
+                .retrieve()
+                .bodyToMono(CapabilityWithTechnologiesDto.class)
                 .onErrorResume(throwable -> Mono.error(new ProcessorException(throwable, TechnicalMessage.INTERNAL_ERROR_IN_ADAPTERS)));
     }
 }
