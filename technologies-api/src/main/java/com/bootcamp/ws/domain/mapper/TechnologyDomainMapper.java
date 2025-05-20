@@ -20,6 +20,7 @@ public class TechnologyDomainMapper {
     }
 
     public TechnologyResponseDto toResponseTechnologyDto(Technology technology) {
+        if (technology == null) return null;
         return TechnologyResponseDto.builder()
                 .id(technology.getId())
                 .name(technology.getName())
@@ -27,6 +28,7 @@ public class TechnologyDomainMapper {
     }
 
     public List<TechnologyResponseDto> toDtoListFromDomainList(List<Technology> technologies) {
+        if (technologies == null) return null;
         return technologies.stream()
                 .map(this::toResponseTechnologyDto)
                 .toList();
