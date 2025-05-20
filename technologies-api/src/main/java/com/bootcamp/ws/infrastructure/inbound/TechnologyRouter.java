@@ -83,7 +83,7 @@ public class TechnologyRouter {
                     operation = @io.swagger.v3.oas.annotations.Operation(
                             operationId = "createTechnology",
                             summary = "Create a new technology",
-                            description = "Create a new technology in the database",
+                            description = "Create a new technology in the database.",
                             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                                     required = true,
                                     description = "Technology Request DTO",
