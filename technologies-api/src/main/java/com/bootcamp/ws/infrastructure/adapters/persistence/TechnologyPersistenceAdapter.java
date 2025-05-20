@@ -59,17 +59,14 @@ public class TechnologyPersistenceAdapter implements TechnologyAdapterPort {
 
     @Override
     public Mono<List<TechnologyCapability>> associateTechnologies(AssociateTechnologiesCreateRequestDto dto) {
-        return technologyCapabilityRepository.existsByCapabilityId(dto.getCapabilityId())
-                .flatMap(exists -> {
-                    List<TechnologyCapabilityEntity> entities = dto.getTechnologiesIds().stream()
-                            .map(techId -> TechnologyCapabilityEntity.builder()
-                                    .technologyId(techId)
-                                    .capabilityId(dto.getCapabilityId())
-                                    .build())
-                            .toList();
-                    return mapper.toDomainsFromEntities(technologyCapabilityRepository.saveAll(entities).collectList());
-                })
-                .switchIfEmpty(Mono.error(new ProcessorException("Error fetching technologies-capabilities", TechnicalMessage.BAD_REQUEST)));
+        List<TechnologyCapabilityEntity> entities = dto.getTechnologiesIds().stream()
+                .map(techId -> TechnologyCapabilityEntity.builder()
+                        .technologyId(techId)
+                        .capabilityId(dto.getCapabilityId())
+                        .build())
+                .toList();
+        return mapper.toDomainsFromEntities(technologyCapabilityRepository.saveAll(entities).collectList())
+                .switchIfEmpty(Mono.error(new ProcessorException("Error saving technologies-capabilities", TechnicalMessage.BAD_REQUEST)));
     }
 
     @Override
@@ -85,5 +82,15 @@ public class TechnologyPersistenceAdapter implements TechnologyAdapterPort {
                 .switchIfEmpty(Mono.error(new NoContentException(TechnicalMessage.NO_CONTENT)))
                 .flatMap(technologyEntity -> Mono.just(mapper.toDomainFromEntity(technologyEntity)))
                 .switchIfEmpty(Mono.error(new ProcessorException("Error fetching technologies", TechnicalMessage.BAD_REQUEST)));
+    }
+
+    @Override
+    public Mono<Boolean> existsByCapabilityId(Long capabilityId) {
+        return technologyCapabilityRepository.existsByCapabilityId(capabilityId)
+                .flatMap(exists -> {
+                    if (exists) return Mono.just(true);
+                    return Mono.just(false);
+                })
+                .switchIfEmpty(Mono.error(new ProcessorException("Error checking technologies-capabilities existence", TechnicalMessage.BAD_REQUEST)));
     }
 }

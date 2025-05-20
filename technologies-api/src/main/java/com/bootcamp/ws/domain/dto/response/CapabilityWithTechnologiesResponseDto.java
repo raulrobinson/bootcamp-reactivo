@@ -13,5 +13,7 @@ import java.util.List;
 @Builder
 public class CapabilityWithTechnologiesResponseDto {
     private Long capabilityId;
-    private List<Long> technologiesIds;
+    // TODO: devolver lista de tecnologias (id, name)
+    //private List<Long> technologiesIds;
+    private List<TechnologyResponseDto> technologiesIds;
 }

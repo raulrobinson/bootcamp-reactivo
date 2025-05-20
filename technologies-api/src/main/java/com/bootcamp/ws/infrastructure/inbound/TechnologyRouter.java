@@ -3,9 +3,9 @@ package com.bootcamp.ws.infrastructure.inbound;
 import com.bootcamp.ws.domain.common.ErrorDto;
 import com.bootcamp.ws.domain.dto.request.AssociateTechnologiesCreateRequestDto;
 import com.bootcamp.ws.domain.dto.request.ExistsTechnologiesRequestDto;
-import com.bootcamp.ws.domain.dto.request.TechnologiesByIdsRequestDto;
 import com.bootcamp.ws.domain.dto.request.TechnologyCreateRequestDto;
 import com.bootcamp.ws.domain.dto.response.AssociateTechnologiesResponseDto;
+import com.bootcamp.ws.domain.dto.response.CapabilityWithTechnologiesResponseDto;
 import com.bootcamp.ws.domain.dto.response.TechnologyResponseDto;
 import com.bootcamp.ws.infrastructure.inbound.handler.TechnologyHandler;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -187,35 +187,42 @@ public class TechnologyRouter {
                             description = "Fetches associated technologies by capability ID from the database",
                             parameters = {
                                     @Parameter(name = "capabilityId", in = ParameterIn.PATH, description = "Capability ID", example = "1"),
+                            },
+                            responses = {
+                                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                                            responseCode = "200",
+                                            description = "OK",
+                                            content = @io.swagger.v3.oas.annotations.media.Content(
+                                                    mediaType = "application/json",
+                                                    array = @io.swagger.v3.oas.annotations.media.ArraySchema(
+                                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = CapabilityWithTechnologiesResponseDto.class)
+                                                    )
+                                            )
+                                    ),
+                                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                                            responseCode = "404", description = "Not Found",
+                                            content = @io.swagger.v3.oas.annotations.media.Content(
+                                                    mediaType = "application/json",
+                                                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDto.class)
+                                            )
+                                    ),
+                                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                                            responseCode = "400", description = "Bad Request",
+                                            content = @io.swagger.v3.oas.annotations.media.Content(
+                                                    mediaType = "application/json",
+                                                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDto.class)
+                                            )
+                                    ),
+                                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                                            responseCode = "500", description = "Internal Server Error",
+                                            content = @io.swagger.v3.oas.annotations.media.Content(
+                                                    mediaType = "application/json",
+                                                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDto.class)
+                                            )
+                                    )
                             }
                     )
             ),
-            @RouterOperation(
-                    path = "/api/v1/technologies/by-ids",
-                    produces = "application/json",
-                    method = RequestMethod.POST,
-                    beanClass = TechnologyHandler.class,
-                    beanMethod = "findTechnologiesByIds",
-                    operation = @io.swagger.v3.oas.annotations.Operation(
-                            operationId = "findTechnologiesByIds",
-                            summary = "Find technologies by IDs",
-                            description = "Fetches technologies by their IDs from the database",
-                            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                                    required = true,
-                                    description = "List of technology IDs",
-                                    content = @io.swagger.v3.oas.annotations.media.Content(
-                                            mediaType = "application/json",
-                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = TechnologiesByIdsRequestDto.class)
-                                    )
-                            ),
-                            responses = {
-                                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "OK"),
-                                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Not Found"),
-                                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Bad Request"),
-                                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Internal Server Error")
-                            }
-                    )
-            )
     })
     public RouterFunction<ServerResponse> route(TechnologyHandler technologyHandler) {
         return RouterFunctions.route()
@@ -223,7 +230,6 @@ public class TechnologyRouter {
                 .POST("/api/v1/technologies/exists", technologyHandler::existsTechnologies)
                 .POST("/api/v1/technologies/associate-technologies", technologyHandler::associateTechnologies)
                 .GET("/api/v1/technologies/find-associates-technologies-by-cap-id/{capabilityId}", technologyHandler::findAssociatesTechsByCapId)
-                .POST("/api/v1/technologies/by-ids", technologyHandler::findTechnologiesByIds)
                 .build();
     }
 }
