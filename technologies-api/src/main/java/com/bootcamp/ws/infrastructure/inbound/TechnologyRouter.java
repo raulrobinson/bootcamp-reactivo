@@ -7,6 +7,8 @@ import com.bootcamp.ws.domain.dto.request.TechnologyCreateDto;
 import com.bootcamp.ws.domain.dto.response.AssociateTechnologiesResponseDto;
 import com.bootcamp.ws.domain.dto.response.TechnologyResponseDto;
 import com.bootcamp.ws.infrastructure.inbound.handler.TechnologyHandler;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import org.springdoc.core.annotations.RouterOperation;
 import org.springdoc.core.annotations.RouterOperations;
 import org.springframework.context.annotation.Bean;
@@ -171,6 +173,21 @@ public class TechnologyRouter {
                                     )
                             }
                     )
+            ),
+            @RouterOperation(
+                    path = "/api/v1/technologies/find-associates-technologies-by-cap-id/{capabilityId}",
+                    produces = "application/json",
+                    method = RequestMethod.GET,
+                    beanClass = TechnologyHandler.class,
+                    beanMethod = "findAssociatesTechsByCapId",
+                    operation = @io.swagger.v3.oas.annotations.Operation(
+                            operationId = "findAssociatesTechsByCapId",
+                            summary = "Find associated technologies by capability ID",
+                            description = "Fetches associated technologies by capability ID from the database",
+                            parameters = {
+                                    @Parameter(name = "capabilityId", in = ParameterIn.PATH, description = "Capability ID", example = "1"),
+                            }
+                    )
             )
     })
     public RouterFunction<ServerResponse> route(TechnologyHandler technologyHandler) {
@@ -178,6 +195,7 @@ public class TechnologyRouter {
                 .POST("/api/v1/technologies", technologyHandler::createTechnology)
                 .POST("/api/v1/technologies/exists", technologyHandler::existsTechnologies)
                 .POST("/api/v1/technologies/associate-technologies", technologyHandler::associateTechnologies)
+                .GET("/api/v1/technologies/find-associates-technologies-by-cap-id/{capabilityId}", technologyHandler::findAssociatesTechsByCapId)
                 .build();
     }
 }

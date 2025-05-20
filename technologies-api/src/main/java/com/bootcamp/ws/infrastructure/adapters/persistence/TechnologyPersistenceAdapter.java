@@ -5,6 +5,7 @@ import com.bootcamp.ws.domain.common.exceptions.NoContentException;
 import com.bootcamp.ws.domain.dto.request.AssociateTechnologiesCreateDto;
 import com.bootcamp.ws.domain.dto.request.ExistsTechnologiesDto;
 import com.bootcamp.ws.domain.api.TechnologyAdapterPort;
+import com.bootcamp.ws.domain.model.TechnologyCapability;
 import com.bootcamp.ws.infrastructure.adapters.persistence.entity.TechnologyCapabilityEntity;
 import com.bootcamp.ws.infrastructure.adapters.persistence.entity.TechnologyEntity;
 import com.bootcamp.ws.infrastructure.adapters.persistence.mapper.TechnologyEntityMapper;
@@ -83,5 +84,11 @@ public class TechnologyPersistenceAdapter implements TechnologyAdapterPort {
                         return technologyCapabilityRepository.saveAll(entities).collectList();
                     }
                 });
+    }
+
+    @Override
+    public Mono<List<TechnologyCapability>> findAllByCapabilityId(Long capabilityId) {
+        return mapper.toMonoTechnologyCapabilityListFromFluxEntities(technologyCapabilityRepository.findAllByCapabilityId(capabilityId));
+
     }
 }
