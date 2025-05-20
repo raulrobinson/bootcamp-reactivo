@@ -41,4 +41,11 @@ public class TechnologyEntityMapper {
                 .description(requestDto.getDescription())
                 .build();
     }
+
+    public Mono<List<TechnologyCapability>> toDomainsFromEntities(Mono<List<TechnologyCapabilityEntity>> listMono) {
+        return listMono.flatMap(entities -> {
+            if (entities == null) return Mono.empty();
+            return toMonoTechnologyCapabilityListFromFluxEntities(Flux.fromIterable(entities));
+        });
+    }
 }

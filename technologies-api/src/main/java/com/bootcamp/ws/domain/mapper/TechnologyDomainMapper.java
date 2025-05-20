@@ -27,6 +27,8 @@ public class TechnologyDomainMapper {
     }
 
     public List<TechnologyResponseDto> toDtoListFromDomainList(List<Technology> technologies) {
-        return
+        return technologies.stream()
+                .map(this::toResponseTechnologyDto)
+                .toList();
     }
 }

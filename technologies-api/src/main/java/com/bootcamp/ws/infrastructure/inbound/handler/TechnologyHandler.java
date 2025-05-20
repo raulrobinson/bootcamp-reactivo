@@ -74,38 +74,6 @@ public class TechnologyHandler {
                 );
     }
 
-//    public Mono<ServerResponse> associateTechnologies(ServerRequest request) {
-//        return request.bodyToMono(AssociateTechnologiesCreateRequestDto.class)
-//                .flatMap(associateTechnologiesServicePort::associateTechnologies)
-//                .flatMap(resultList -> ServerResponse.ok().bodyValue(resultList))
-//                .doOnError(error -> log.error(CREATE_ERROR, error.getMessage()))
-//                .onErrorResume(BusinessException.class, ex -> buildErrorResponse(
-//                        HttpStatus.BAD_REQUEST,
-//                        ex.getTechnicalMessage(),
-//                        List.of(ErrorDto.builder()
-//                                .code(ex.getTechnicalMessage().getCode())
-//                                .message(ex.getTechnicalMessage().getMessage())
-//                                .parameter(ex.getTechnicalMessage().getParameter())
-//                                .build())
-//                ));
-//    }
-//
-//    public Mono<ServerResponse> findAssociatesTechsByCapId(ServerRequest request) {
-//        Long capabilityId = Long.parseLong(request.pathVariable("capabilityId"));
-//        return findAssociatesTechsByCapIdServicePort.findAssociatesTechsByCapId(capabilityId)
-//                .flatMap(technology -> ServerResponse.ok().bodyValue(technology))
-//                .doOnError(error -> log.error(RESOURCE_ERROR, error.getMessage()))
-//                .onErrorResume(BusinessException.class, ex -> buildErrorResponse(
-//                        HttpStatus.BAD_REQUEST,
-//                        ex.getTechnicalMessage(),
-//                        List.of(ErrorDto.builder()
-//                                .code(ex.getTechnicalMessage().getCode())
-//                                .message(ex.getTechnicalMessage().getMessage())
-//                                .parameter(ex.getTechnicalMessage().getParameter())
-//                                .build())
-//                ));
-//    }
-
     public Mono<ServerResponse> findTechnologiesByIds(ServerRequest request) {
         return request.bodyToMono(TechnologiesByIdsRequestDto.class)
                 .flatMapMany(dto -> findTechnologiesByIdsServicePort
@@ -129,5 +97,37 @@ public class TechnologyHandler {
                                         .build())
                         )
                 );
+    }
+
+    public Mono<ServerResponse> associateTechnologies(ServerRequest request) {
+        return request.bodyToMono(AssociateTechnologiesCreateRequestDto.class)
+                .flatMap(associateTechnologiesServicePort::associateTechnologies)
+                .flatMap(resultList -> ServerResponse.ok().bodyValue(resultList))
+                .doOnError(error -> log.error(CREATE_ERROR, error.getMessage()))
+                .onErrorResume(BusinessException.class, ex -> buildErrorResponse(
+                        HttpStatus.BAD_REQUEST,
+                        ex.getTechnicalMessage(),
+                        List.of(ErrorDto.builder()
+                                .code(ex.getTechnicalMessage().getCode())
+                                .message(ex.getTechnicalMessage().getMessage())
+                                .parameter(ex.getTechnicalMessage().getParameter())
+                                .build())
+                ));
+    }
+
+    public Mono<ServerResponse> findAssociatesTechsByCapId(ServerRequest request) {
+        Long capabilityId = Long.parseLong(request.pathVariable("capabilityId"));
+        return findAssociatesTechsByCapIdServicePort.findAssociatesTechsByCapId(capabilityId)
+                .flatMap(technology -> ServerResponse.ok().bodyValue(technology))
+                .doOnError(error -> log.error(RESOURCE_ERROR, error.getMessage()))
+                .onErrorResume(BusinessException.class, ex -> buildErrorResponse(
+                        HttpStatus.BAD_REQUEST,
+                        ex.getTechnicalMessage(),
+                        List.of(ErrorDto.builder()
+                                .code(ex.getTechnicalMessage().getCode())
+                                .message(ex.getTechnicalMessage().getMessage())
+                                .parameter(ex.getTechnicalMessage().getParameter())
+                                .build())
+                ));
     }
 }

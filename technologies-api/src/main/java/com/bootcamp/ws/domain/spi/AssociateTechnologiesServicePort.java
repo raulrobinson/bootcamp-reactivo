@@ -7,5 +7,5 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 public interface AssociateTechnologiesServicePort {
-//    Mono<List<TechnologyCapability>> associateTechnologies(AssociateTechnologiesCreateRequestDto dto);
+    Mono<List<TechnologyCapability>> associateTechnologies(AssociateTechnologiesCreateRequestDto dto);
 }
