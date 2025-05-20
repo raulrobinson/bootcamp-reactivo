@@ -1,10 +1,9 @@
 package com.bootcamp.ws.infrastructure.inbound;
 
 import com.bootcamp.ws.domain.common.ErrorDto;
-import com.bootcamp.ws.domain.dto.request.AssociateTechnologiesCreateDto;
-import com.bootcamp.ws.domain.dto.request.ExistsTechnologiesDto;
-import com.bootcamp.ws.domain.dto.request.TechnologiesByIdsRequestDto;
-import com.bootcamp.ws.domain.dto.request.TechnologyCreateDto;
+import com.bootcamp.ws.domain.dto.request.AssociateTechnologiesCreateRequestDto;
+import com.bootcamp.ws.domain.dto.request.ExistsTechnologiesRequestDto;
+import com.bootcamp.ws.domain.dto.request.TechnologyCreateRequestDto;
 import com.bootcamp.ws.domain.dto.response.AssociateTechnologiesResponseDto;
 import com.bootcamp.ws.domain.dto.response.TechnologyResponseDto;
 import com.bootcamp.ws.infrastructure.inbound.handler.TechnologyHandler;
@@ -39,7 +38,7 @@ public class TechnologyRouter {
                                     description = "List of technology IDs",
                                     content = @io.swagger.v3.oas.annotations.media.Content(
                                             mediaType = "application/json",
-                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ExistsTechnologiesDto.class)
+                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ExistsTechnologiesRequestDto.class)
                                     )
                             ),
                             responses = {
@@ -92,7 +91,7 @@ public class TechnologyRouter {
                                     description = "Technology Request DTO",
                                     content = @io.swagger.v3.oas.annotations.media.Content(
                                             mediaType = "application/json",
-                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = TechnologyCreateDto.class)
+                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = TechnologyCreateRequestDto.class)
                                     )
                             ),
                             responses = {
@@ -146,7 +145,7 @@ public class TechnologyRouter {
                                     description = "Technology IDs Request DTO",
                                     content = @io.swagger.v3.oas.annotations.media.Content(
                                             mediaType = "application/json",
-                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = AssociateTechnologiesCreateDto.class)
+                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = AssociateTechnologiesCreateRequestDto.class)
                                     )
                             ),
                             responses = {
@@ -221,9 +220,9 @@ public class TechnologyRouter {
         return RouterFunctions.route()
                 .POST("/api/v1/technologies", technologyHandler::createTechnology)
                 .POST("/api/v1/technologies/exists", technologyHandler::existsTechnologies)
-                .POST("/api/v1/technologies/associate-technologies", technologyHandler::associateTechnologies)
-                .GET("/api/v1/technologies/find-associates-technologies-by-cap-id/{capabilityId}", technologyHandler::findAssociatesTechsByCapId)
-//                .POST("/api/v1/technologies/by-ids", technologyHandler::findTechnologiesByIds)
+//                .POST("/api/v1/technologies/associate-technologies", technologyHandler::associateTechnologies)
+//                .GET("/api/v1/technologies/find-associates-technologies-by-cap-id/{capabilityId}", technologyHandler::findAssociatesTechsByCapId)
+                .POST("/api/v1/technologies/by-ids", technologyHandler::findTechnologiesByIds)
                 .build();
     }
 }
