@@ -1,7 +1,7 @@
 package com.bootcamp.ws;
 
-import com.bootcamp.ws.entity.TechnologyEntity;
-import com.bootcamp.ws.repository.TechnologyRepository;
+import com.bootcamp.ws.infrastructure.adapters.persistence.entity.TechnologyEntity;
+import com.bootcamp.ws.infrastructure.adapters.persistence.repository.TechnologyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
