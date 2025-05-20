@@ -1,6 +1,6 @@
 package com.bootcamp.ws.infrastructure.adapters.persistence.mapper;
 
-import com.bootcamp.ws.domain.dto.CapabilityCreateDto;
+import com.bootcamp.ws.domain.dto.request.CapabilityCreateDto;
 import com.bootcamp.ws.infrastructure.adapters.persistence.entity.CapabilityEntity;
 import com.bootcamp.ws.domain.model.Capability;
 import org.springframework.stereotype.Component;

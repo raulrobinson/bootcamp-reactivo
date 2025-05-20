@@ -3,7 +3,7 @@ package com.bootcamp.ws.infrastructure.inbound.handler;
 import com.bootcamp.ws.domain.common.ErrorDto;
 import com.bootcamp.ws.domain.common.exceptions.BusinessException;
 import com.bootcamp.ws.domain.common.exceptions.ProcessorException;
-import com.bootcamp.ws.domain.dto.CapabilityCreateDto;
+import com.bootcamp.ws.domain.dto.request.CapabilityCreateDto;
 import com.bootcamp.ws.domain.spi.AssociateTechnologiesServicePort;
 import com.bootcamp.ws.domain.spi.CreateCapabilityServicePort;
 import com.bootcamp.ws.domain.spi.ExistsCapabilitiesServicePort;
@@ -40,7 +40,7 @@ public class CapabilityHandler {
 
     public Mono<ServerResponse> createCapability(ServerRequest request) {
         return request.bodyToMono(CapabilityCreateDto.class)
-                .flatMap(technology -> createCapabilityServicePort.createCapability(mapper.toCapabilityEntityFromDto(technology)))
+                .flatMap(technology -> createCapabilityServicePort.createCapability(technology))
                 .flatMap(technology -> ServerResponse.ok().bodyValue(technology))
                 .doOnError(error -> log.error(CREATE_ERROR, error.getMessage()))
                 .onErrorResume(BusinessException.class, ex -> buildErrorResponse(

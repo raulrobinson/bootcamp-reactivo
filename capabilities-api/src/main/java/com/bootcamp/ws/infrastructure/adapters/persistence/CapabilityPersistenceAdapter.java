@@ -44,14 +44,14 @@ public class CapabilityPersistenceAdapter implements CapabilityPersistenceAdapte
 
     @Override
     public Mono<Capability> createCapability(Capability request) {
+
         ExistsTechnologiesDto technologiesIds = ExistsTechnologiesDto.builder()
                 .technologiesIds(request.getTechnologyIds())
                 .build();
+
         return technologyExternalAdapterPort.existsTechnologies(technologiesIds)
                 .switchIfEmpty(Mono.error(new ValidationException(TechnicalMessage.INVALID_REQUEST)))
                 .flatMap(validas -> {
-
-                    System.out.println("validas: " + validas);
 
                     // Paso 2: Crear entidad de dominio
                     Capability capability = Capability.builder()
@@ -63,6 +63,7 @@ public class CapabilityPersistenceAdapter implements CapabilityPersistenceAdapte
                     // Paso 3: Guardar la capacidad
                     return capabilityRepository.save(mapper.toCapabilityEntityFromDomain(capability))
                             .flatMap(savedCap -> {
+
                                 // Paso 4: Asociar tecnologías con la capacidad
                                 TechnologyAssociateTechnologies associateRequest = TechnologyAssociateTechnologies.builder()
                                         .capabilityId(savedCap.getId())
