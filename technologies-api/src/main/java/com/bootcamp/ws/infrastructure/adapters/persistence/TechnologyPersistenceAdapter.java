@@ -91,4 +91,17 @@ public class TechnologyPersistenceAdapter implements TechnologyAdapterPort {
         return mapper.toMonoTechnologyCapabilityListFromFluxEntities(technologyCapabilityRepository.findAllByCapabilityId(capabilityId));
 
     }
+
+    @Override
+    public Flux<Technology> findTechnologiesByIds(List<Long> technologiesIds) {
+        return technologyRepository.findAllById(technologiesIds)
+                .switchIfEmpty(Mono.error(new NoContentException(TechnicalMessage.NO_CONTENT)))
+                .flatMap(technologyEntity -> {
+                    if (technologyEntity == null) {
+                        return Mono.error(new NoContentException(TechnicalMessage.NO_CONTENT));
+                    } else {
+                        return Mono.just(mapper.toDomainFromEntity(technologyEntity));
+                    }
+                });
+    }
 }
