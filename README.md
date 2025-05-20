@@ -28,7 +28,7 @@ This project is designed to be modular and can be easily split into microservice
 
 ### Architecture
 
-![Reactive-arquitectura.png](assets/Reactive-arquitectura.png)
+![Reactive-arquitectura.png](assets/reactive-arquitectura.png)
 
 ### Database Relational
 
@@ -36,7 +36,7 @@ This project is designed to be modular and can be easily split into microservice
 
 ### History Use Cases
 
-![HUs.png](assets/HUs.png)
+![HUs.png](assets/hus.png)
 
 ### Technologies
 
