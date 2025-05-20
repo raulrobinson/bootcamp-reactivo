@@ -26,11 +26,11 @@ public class CapabilityEntityMapper {
                 .build();
     }
 
-    public Capability toCapabilityEntityFromDto(CapabilityCreateDto dto) {
-        return Capability.builder()
-                .name(dto.getName().toLowerCase())
-                .description(dto.getDescription())
-                .technologyIds(dto.getTechnologyIds())
-                .build();
-    }
+//    public Capability toCapabilityEntityFromDto(CapabilityCreateDto dto) {
+//        return Capability.builder()
+//                .name(dto.getName().toLowerCase())
+//                .description(dto.getDescription())
+//                .technologyIds(dto.getTechnologyIds())
+//                .build();
+//    }
 }

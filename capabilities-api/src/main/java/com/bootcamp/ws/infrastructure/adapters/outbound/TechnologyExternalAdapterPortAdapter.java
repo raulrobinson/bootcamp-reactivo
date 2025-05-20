@@ -49,7 +49,7 @@ public class TechnologyExternalAdapterPortAdapter implements TechnologyExternalA
     @Override
     public Mono<CapabilityWithTechnologiesDto> findAssociatesTechsByCapId(Long capabilityId) {
         return client.get()
-                .uri(serviceUrl + "/capabilities/{capabilityId}", capabilityId)
+                .uri(serviceUrl + "/find-associates-technologies-by-cap-id/{capabilityId}", capabilityId)
                 .retrieve()
                 .bodyToMono(CapabilityWithTechnologiesDto.class)
                 .onErrorResume(throwable -> Mono.error(new ProcessorException(throwable, TechnicalMessage.INTERNAL_ERROR_IN_ADAPTERS)));
