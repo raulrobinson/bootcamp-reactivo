@@ -14,7 +14,7 @@ This project is based on the Clean Architecture principles, which aim to create 
 
 - **Infrastructure Layer**: Contains the implementation details, such as database access, external APIs, and other technical concerns. This layer is responsible for interacting with the outside world.
 
-![hexagon-adapters-ports.drawio.png](hexagon-adapters-ports.drawio.png)
+![hexagon-adapters-ports.drawio.png](assets/hexagon-adapters-ports.drawio.png)
 
 ### Microservices
 
@@ -28,7 +28,7 @@ This project is designed to be modular and can be easily split into microservice
 
 ### Architecture
 
-![Reactive-arquitectura.png](Reactive-arquitectura.png)
+![Reactive-arquitectura.png](assets/Reactive-arquitectura.png)
 
 ### Database Relational
 
@@ -36,7 +36,7 @@ This project is designed to be modular and can be easily split into microservice
 
 ### History Use Cases
 
-![HUs.png](HUs.png)
+![HUs.png](assets/HUs.png)
 
 ### Technologies
 
@@ -57,7 +57,7 @@ This project is designed to be modular and can be easily split into microservice
 
 ### Tecnologías API Management
 
-![flow-tecnologias-api-servicio.png](flow-tecnologias-api-servicio.png)
+![flow-tecnologias-api-servicio.png](assets/flow-tecnologias-api-servicio.png)
 
 ### Author
 
