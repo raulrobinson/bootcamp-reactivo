@@ -9,6 +9,7 @@ import com.bootcamp.ws.domain.dto.request.TechnologyCreateDto;
 import com.bootcamp.ws.domain.spi.AssociateTechnologiesServicePort;
 import com.bootcamp.ws.domain.spi.CreateTechnologyServicePort;
 import com.bootcamp.ws.domain.spi.ExistsTechnologiesServicePort;
+import com.bootcamp.ws.domain.spi.FindAssociatesTechsByCapIdServicePort;
 import com.bootcamp.ws.infrastructure.inbound.mapper.TechnologyMapper;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,7 @@ public class TechnologyHandler {
     private final CreateTechnologyServicePort createTechnologyServicePort;
     private final AssociateTechnologiesServicePort associateTechnologiesServicePort;
     private final ExistsTechnologiesServicePort existsTechnologiesServicePort;
+    private final FindAssociatesTechsByCapIdServicePort findAssociatesTechsByCapIdServicePort;
 
     private final TechnologyMapper mapper;
 
@@ -78,6 +80,22 @@ public class TechnologyHandler {
                 .flatMap(associateTechnologiesServicePort::associateTechnologies)
                 .flatMap(resultList -> ServerResponse.ok().bodyValue(resultList))
                 .doOnError(error -> log.error(CREATE_ERROR, error.getMessage()))
+                .onErrorResume(BusinessException.class, ex -> buildErrorResponse(
+                        HttpStatus.BAD_REQUEST,
+                        ex.getTechnicalMessage(),
+                        List.of(ErrorDto.builder()
+                                .code(ex.getTechnicalMessage().getCode())
+                                .message(ex.getTechnicalMessage().getMessage())
+                                .parameter(ex.getTechnicalMessage().getParameter())
+                                .build())
+                ));
+    }
+
+    public Mono<ServerResponse> findAssociatesTechsByCapId(ServerRequest request) {
+        Long capabilityId = Long.parseLong(request.pathVariable("capabilityId"));
+        return findAssociatesTechsByCapIdServicePort.findAssociatesTechsByCapId(capabilityId)
+                .flatMap(technology -> ServerResponse.ok().bodyValue(technology))
+                .doOnError(error -> log.error(RESOURCE_ERROR, error.getMessage()))
                 .onErrorResume(BusinessException.class, ex -> buildErrorResponse(
                         HttpStatus.BAD_REQUEST,
                         ex.getTechnicalMessage(),
