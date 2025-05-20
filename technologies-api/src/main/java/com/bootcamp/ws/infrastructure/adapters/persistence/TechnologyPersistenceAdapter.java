@@ -1,6 +1,5 @@
 package com.bootcamp.ws.infrastructure.adapters.persistence;
 
-import com.bootcamp.ws.domain.common.exceptions.BusinessException;
 import com.bootcamp.ws.domain.common.exceptions.NoContentException;
 import com.bootcamp.ws.domain.common.exceptions.ProcessorException;
 import com.bootcamp.ws.domain.dto.request.AssociateTechnologiesCreateRequestDto;
@@ -58,40 +57,40 @@ public class TechnologyPersistenceAdapter implements TechnologyAdapterPort {
                 .switchIfEmpty(Mono.error(new ProcessorException("Error fetching technologies", TechnicalMessage.BAD_REQUEST)));
     }
 
-//    @Override
-//    public Mono<List<TechnologyCapabilityEntity>> associateTechnologies(AssociateTechnologiesCreateRequestDto dto) {
-//        return technologyCapabilityRepository.existsByCapabilityId(dto.getCapabilityId())
-//                .flatMap(exists -> {
-//                    if (exists) {
-//                        return Mono.error(new BusinessException(TechnicalMessage.ALREADY_EXISTS));
-//                    } else {
-//                        List<TechnologyCapabilityEntity> entities = dto.getTechnologiesIds().stream()
-//                                .map(techId -> TechnologyCapabilityEntity.builder()
-//                                        .technologyId(techId)
-//                                        .capabilityId(dto.getCapabilityId())
-//                                        .build())
-//                                .toList();
-//                        return technologyCapabilityRepository.saveAll(entities).collectList();
-//                    }
-//                });
-//    }
-//
-//    @Override
-//    public Mono<List<TechnologyCapability>> findAllByCapabilityId(Long capabilityId) {
-//        return mapper.toMonoTechnologyCapabilityListFromFluxEntities(technologyCapabilityRepository.findAllByCapabilityId(capabilityId));
-//
-//    }
-//
-//    @Override
-//    public Flux<Technology> findTechnologiesByIds(List<Long> technologiesIds) {
-//        return technologyRepository.findAllById(technologiesIds)
-//                .switchIfEmpty(Mono.error(new NoContentException(TechnicalMessage.NO_CONTENT)))
-//                .flatMap(technologyEntity -> {
-//                    if (technologyEntity == null) {
-//                        return Mono.error(new NoContentException(TechnicalMessage.NO_CONTENT));
-//                    } else {
-//                        return Mono.just(mapper.toDomainFromEntity(technologyEntity));
-//                    }
-//                });
-//    }
+    @Override
+    public Mono<List<TechnologyCapability>> associateTechnologies(AssociateTechnologiesCreateRequestDto dto) {
+        List<TechnologyCapabilityEntity> entities = dto.getTechnologiesIds().stream()
+                .map(techId -> TechnologyCapabilityEntity.builder()
+                        .technologyId(techId)
+                        .capabilityId(dto.getCapabilityId())
+                        .build())
+                .toList();
+        return mapper.toDomainsFromEntities(technologyCapabilityRepository.saveAll(entities).collectList())
+                .switchIfEmpty(Mono.error(new ProcessorException("Error saving technologies-capabilities", TechnicalMessage.BAD_REQUEST)));
+    }
+
+    @Override
+    public Mono<List<TechnologyCapability>> findAllByCapabilityId(Long capabilityId) {
+        return mapper.toMonoTechnologyCapabilityListFromFluxEntities(technologyCapabilityRepository.findAllByCapabilityId(capabilityId))
+                .switchIfEmpty(Mono.error(new ProcessorException("Error fetching technologies-capabilities", TechnicalMessage.BAD_REQUEST)));
+
+    }
+
+    @Override
+    public Flux<Technology> findTechnologiesByIds(List<Long> technologiesIds) {
+        return technologyRepository.findAllById(technologiesIds)
+                .switchIfEmpty(Mono.error(new NoContentException(TechnicalMessage.NO_CONTENT)))
+                .flatMap(technologyEntity -> Mono.just(mapper.toDomainFromEntity(technologyEntity)))
+                .switchIfEmpty(Mono.error(new ProcessorException("Error fetching technologies", TechnicalMessage.BAD_REQUEST)));
+    }
+
+    @Override
+    public Mono<Boolean> existsByCapabilityId(Long capabilityId) {
+        return technologyCapabilityRepository.existsByCapabilityId(capabilityId)
+                .flatMap(exists -> {
+                    if (exists) return Mono.just(true);
+                    return Mono.just(false);
+                })
+                .switchIfEmpty(Mono.error(new ProcessorException("Error checking technologies-capabilities existence", TechnicalMessage.BAD_REQUEST)));
+    }
 }

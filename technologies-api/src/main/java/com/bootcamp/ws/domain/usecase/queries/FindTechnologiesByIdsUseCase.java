@@ -23,11 +23,5 @@ public class FindTechnologiesByIdsUseCase implements FindTechnologiesByIdsServic
         return technologyAdapterPort.findTechnologiesByIds(technologiesIds)
                 .collectList()
                 .map(mapper::toDtoListFromDomainList);
-//                .map(technologies -> technologies.stream()
-//                        .map(technology -> TechnologyResponseDto.builder()
-//                                .id(technology.getId())
-//                                .name(technology.getName())
-//                                .build())
-//                        .toList());
     }
 }

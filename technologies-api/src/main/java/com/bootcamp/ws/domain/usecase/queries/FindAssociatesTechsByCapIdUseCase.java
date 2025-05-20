@@ -4,44 +4,49 @@ import com.bootcamp.ws.domain.api.TechnologyAdapterPort;
 import com.bootcamp.ws.domain.common.enums.TechnicalMessage;
 import com.bootcamp.ws.domain.common.exceptions.NotFoundException;
 import com.bootcamp.ws.domain.dto.response.CapabilityWithTechnologiesResponseDto;
+import com.bootcamp.ws.domain.dto.response.TechnologyResponseDto;
 import com.bootcamp.ws.domain.model.TechnologyCapability;
 import com.bootcamp.ws.domain.spi.FindAssociatesTechsByCapIdServicePort;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
-@RequiredArgsConstructor
 public class FindAssociatesTechsByCapIdUseCase implements FindAssociatesTechsByCapIdServicePort {
 
     private final TechnologyAdapterPort technologyAdapterPort;
 
-//    @Override
-//    public Mono<CapabilityWithTechnologiesResponseDto> findAssociatesTechsByCapId(Long capabilityId) {
-//        return technologyAdapterPort.findAllByCapabilityId(capabilityId)
-//                .flatMap(list -> groupTechnologiesByCapability(list, capabilityId));
-//    }
+    public FindAssociatesTechsByCapIdUseCase(TechnologyAdapterPort technologyAdapterPort) {
+        this.technologyAdapterPort = technologyAdapterPort;
+    }
 
-    public Mono<CapabilityWithTechnologiesResponseDto> groupTechnologiesByCapability(List<TechnologyCapability> input, Long capabilityId) {
-        if (input == null || input.isEmpty()) {
-            return Mono.error(new NotFoundException(TechnicalMessage.NOT_FOUND, capabilityId.toString()));
-        }
+    @Override
+    public Mono<CapabilityWithTechnologiesResponseDto> findAssociatesTechsByCapId(Long capabilityId) {
+        return technologyAdapterPort.findAllByCapabilityId(capabilityId)
+                .flatMap(list -> groupTechnologiesByCapability(list, capabilityId));
+    }
 
+    public Mono<CapabilityWithTechnologiesResponseDto> groupTechnologiesByCapability(List<TechnologyCapability> input,
+                                                                                     Long capabilityId) {
+        if (input == null || input.isEmpty()) return Mono.error(new NotFoundException(TechnicalMessage.NOT_FOUND, capabilityId.toString()));
         Long capId = input.getFirst().getCapabilityId();
 
         List<Long> technologyIds = input.stream()
                 .map(TechnologyCapability::getTechnologyId)
+                .distinct()
                 .collect(Collectors.toList());
 
-        CapabilityWithTechnologiesResponseDto result = CapabilityWithTechnologiesResponseDto.builder()
-                .capabilityId(capId)
-                .technologiesIds(technologyIds)
-                .build();
-
-        return Mono.just(result);
+        return technologyAdapterPort.findTechnologiesByIds(technologyIds)
+                .collectList()
+                .map(technologies -> CapabilityWithTechnologiesResponseDto.builder()
+                        .capabilityId(capId)
+                        .technologiesIds(technologies.stream()
+                                .map(tech -> TechnologyResponseDto.builder()
+                                        .id(tech.getId())
+                                        .name(tech.getName())
+                                        .build())
+                                .collect(Collectors.toList()))
+                        .build());
     }
 
 }
