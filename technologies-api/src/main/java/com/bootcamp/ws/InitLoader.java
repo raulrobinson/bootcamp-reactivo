@@ -75,13 +75,13 @@ public class InitLoader implements CommandLineRunner {
         tech15.setName("powershell");
         tech15.setDescription("Lenguaje de programación de comandos para sistemas Windows.");
         
-        repository.count()
-                .filter(count -> count == 0)
-                .flatMapMany(count -> repository.saveAll(Flux.just(
-                        tech1, tech2, tech3, tech4, tech5,
-                        tech6, tech7, tech8, tech9, tech10,
-                        tech11, tech12, tech13, tech14, tech15
-                )))
-                .subscribe(tech -> System.out.println("Tecnología creada: " + tech.getName()));
+//        repository.count()
+//                .filter(count -> count == 0)
+//                .flatMapMany(count -> repository.saveAll(Flux.just(
+//                        tech1, tech2, tech3, tech4, tech5,
+//                        tech6, tech7, tech8, tech9, tech10,
+//                        tech11, tech12, tech13, tech14, tech15
+//                )))
+//                .subscribe(tech -> System.out.println("Tecnología creada: " + tech.getName()));
     }
 }

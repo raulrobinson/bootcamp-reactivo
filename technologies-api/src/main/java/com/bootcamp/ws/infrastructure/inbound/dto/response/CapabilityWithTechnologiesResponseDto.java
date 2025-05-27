@@ -1,4 +1,4 @@
-package com.bootcamp.ws.domain.dto.response;
+package com.bootcamp.ws.infrastructure.inbound.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

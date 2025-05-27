@@ -1,12 +1,12 @@
 package com.bootcamp.ws.infrastructure.inbound;
 
-import com.bootcamp.ws.domain.common.ErrorDto;
-import com.bootcamp.ws.domain.dto.request.AssociateTechnologiesCreateRequestDto;
-import com.bootcamp.ws.domain.dto.request.ExistsTechnologiesRequestDto;
-import com.bootcamp.ws.domain.dto.request.TechnologyCreateRequestDto;
-import com.bootcamp.ws.domain.dto.response.AssociateTechnologiesResponseDto;
-import com.bootcamp.ws.domain.dto.response.CapabilityWithTechnologiesResponseDto;
-import com.bootcamp.ws.domain.dto.response.TechnologyResponseDto;
+import com.bootcamp.ws.infrastructure.inbound.dto.response.ErrorDto;
+import com.bootcamp.ws.infrastructure.inbound.dto.request.AssociateTechnologiesCreateRequestDto;
+import com.bootcamp.ws.infrastructure.inbound.dto.request.ExistsTechnologiesRequestDto;
+import com.bootcamp.ws.infrastructure.inbound.dto.request.TechnologyCreateRequestDto;
+import com.bootcamp.ws.infrastructure.inbound.dto.response.AssociateTechnologiesResponseDto;
+import com.bootcamp.ws.infrastructure.inbound.dto.response.CapabilityWithTechnologiesResponseDto;
+import com.bootcamp.ws.infrastructure.inbound.dto.response.TechnologyResponseDto;
 import com.bootcamp.ws.infrastructure.inbound.handler.TechnologyHandler;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -109,7 +109,9 @@ public class TechnologyRouter {
                                             description = "Bad Request",
                                             content = @io.swagger.v3.oas.annotations.media.Content(
                                                     mediaType = "application/json",
-                                                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDto.class)
+                                                    array = @io.swagger.v3.oas.annotations.media.ArraySchema(
+                                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDto.class)
+                                                    )
                                             )
                                     ),
                                     @io.swagger.v3.oas.annotations.responses.ApiResponse(
@@ -117,7 +119,9 @@ public class TechnologyRouter {
                                             description = "Conflict",
                                             content = @io.swagger.v3.oas.annotations.media.Content(
                                                     mediaType = "application/json",
-                                                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDto.class)
+                                                    array = @io.swagger.v3.oas.annotations.media.ArraySchema(
+                                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDto.class)
+                                                    )
                                             )
                                     ),
                                     @io.swagger.v3.oas.annotations.responses.ApiResponse(
@@ -125,7 +129,9 @@ public class TechnologyRouter {
                                             description = "Internal Server Error",
                                             content = @io.swagger.v3.oas.annotations.media.Content(
                                                     mediaType = "application/json",
-                                                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDto.class)
+                                                    array = @io.swagger.v3.oas.annotations.media.ArraySchema(
+                                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDto.class)
+                                                    )
                                             )
                                     )
                             }
@@ -227,9 +233,9 @@ public class TechnologyRouter {
     public RouterFunction<ServerResponse> route(TechnologyHandler technologyHandler) {
         return RouterFunctions.route()
                 .POST("/api/v1/technologies", technologyHandler::createTechnology)
-                .POST("/api/v1/technologies/exists", technologyHandler::existsTechnologies)
-                .POST("/api/v1/technologies/associate-technologies", technologyHandler::associateTechnologies)
-                .GET("/api/v1/technologies/find-associates-technologies-by-cap-id/{capabilityId}", technologyHandler::findAssociatesTechsByCapId)
+//                .POST("/api/v1/technologies/exists", technologyHandler::existsTechnologies)
+//                .POST("/api/v1/technologies/associate-technologies", technologyHandler::associateTechnologies)
+//                .GET("/api/v1/technologies/find-associates-technologies-by-cap-id/{capabilityId}", technologyHandler::findAssociatesTechsByCapId)
                 .build();
     }
 }

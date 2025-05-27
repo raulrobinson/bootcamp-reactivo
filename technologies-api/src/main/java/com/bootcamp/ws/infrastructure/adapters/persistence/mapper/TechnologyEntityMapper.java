@@ -1,6 +1,6 @@
 package com.bootcamp.ws.infrastructure.adapters.persistence.mapper;
 
-import com.bootcamp.ws.domain.dto.request.TechnologyCreateRequestDto;
+import com.bootcamp.ws.infrastructure.inbound.dto.request.TechnologyCreateRequestDto;
 import com.bootcamp.ws.domain.model.TechnologyCapability;
 import com.bootcamp.ws.infrastructure.adapters.persistence.entity.TechnologyCapabilityEntity;
 import com.bootcamp.ws.infrastructure.adapters.persistence.entity.TechnologyEntity;
@@ -16,12 +16,25 @@ public class TechnologyEntityMapper {
 
     public Technology toDomainFromEntity(TechnologyEntity entity) {
         if (entity == null) return null;
-        return Technology.builder()
+
+        return new Technology.Builder()
                 .id(entity.getId())
                 .name(entity.getName())
                 .description(entity.getDescription())
                 .createdAt(String.valueOf(entity.getCreatedAt()))
                 .updatedAt(String.valueOf(entity.getUpdatedAt()))
+//                .createdAt(entity.getCreatedAt() != null ? entity.getCreatedAt().toString() : null)
+//                .updatedAt(entity.getUpdatedAt() != null ? entity.getUpdatedAt().toString() : null)
+                .build();
+    }
+
+
+    public TechnologyEntity toEntityFromDomain(Technology technology) {
+        if (technology == null) return null;
+        return TechnologyEntity.builder()
+                .id(technology.getId())
+                .name(technology.getName().toLowerCase())
+                .description(technology.getDescription())
                 .build();
     }
 
