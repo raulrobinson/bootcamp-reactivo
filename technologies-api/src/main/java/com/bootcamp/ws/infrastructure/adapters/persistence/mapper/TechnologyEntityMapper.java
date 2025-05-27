@@ -23,8 +23,6 @@ public class TechnologyEntityMapper {
                 .description(entity.getDescription())
                 .createdAt(String.valueOf(entity.getCreatedAt()))
                 .updatedAt(String.valueOf(entity.getUpdatedAt()))
-//                .createdAt(entity.getCreatedAt() != null ? entity.getCreatedAt().toString() : null)
-//                .updatedAt(entity.getUpdatedAt() != null ? entity.getUpdatedAt().toString() : null)
                 .build();
     }
 
@@ -42,7 +40,7 @@ public class TechnologyEntityMapper {
         if (entities == null) return null;
         return entities.collectList()
                 .map(entityList -> entityList.stream()
-                        .map(entity -> TechnologyCapability.builder()
+                        .map(entity -> new TechnologyCapability.Builder()
                                 .technologyId(entity.getTechnologyId())
                                 .capabilityId(entity.getCapabilityId())
                                 .build())
@@ -63,5 +61,25 @@ public class TechnologyEntityMapper {
             if (entities == null) return Mono.empty();
             return toMonoTechnologyCapabilityListFromFluxEntities(Flux.fromIterable(entities));
         });
+    }
+
+    public Iterable<TechnologyCapabilityEntity> toTechnologyCapabilityEntitiesFromDomains(List<TechnologyCapability> entities) {
+        if (entities == null || entities.isEmpty()) return List.of();
+        return entities.stream()
+                .map(entity -> TechnologyCapabilityEntity.builder()
+                        .technologyId(entity.getTechnologyId())
+                        .capabilityId(entity.getCapabilityId())
+                        .build())
+                .toList();
+    }
+
+    public List<TechnologyCapability> toTechnologyCapabilityDomainsFromEntities(List<TechnologyCapabilityEntity> entities) {
+        if (entities == null || entities.isEmpty()) return List.of();
+        return entities.stream()
+                .map(entity -> new TechnologyCapability.Builder()
+                        .technologyId(entity.getTechnologyId())
+                        .capabilityId(entity.getCapabilityId())
+                        .build())
+                .toList();
     }
 }

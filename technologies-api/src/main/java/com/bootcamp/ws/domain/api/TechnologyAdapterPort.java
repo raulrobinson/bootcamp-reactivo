@@ -14,6 +14,11 @@ import java.util.concurrent.CompletableFuture;
 public interface TechnologyAdapterPort {
     CompletableFuture<Technology> createTechnology(Technology request);
     CompletableFuture<Boolean> existsByName(String name);
+    CompletableFuture<List<Technology>> existsTechnologies(List<Long> technologiesIds);
+    CompletableFuture<List<Technology>> findTechnologiesByIds(List<Long> technologiesIds);
+    CompletableFuture<List<TechnologyCapability>> associateTechnologies(Long capabilityId, List<Long> technologiesIds);
+
+
 //    Flux<Technology> existsTechnologies(ExistsTechnologiesRequestDto dto);
 //    // ------------------ devolver lista de tecnologias (con id y nombre)
 //    Flux<Technology> findTechnologiesByIds(List<Long> technologiesIds);

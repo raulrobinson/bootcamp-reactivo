@@ -6,4 +6,5 @@ import lombok.experimental.UtilityClass;
 public class Constants {
     public static final String RESOURCE_ERROR = "Error on resource: {}";
     public static final String CREATE_ERROR = "Error creating resource: {}";
+    public static final String LIST_ERROR = "Error listing resources: {}";
 }

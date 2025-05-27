@@ -1,7 +1,11 @@
 package com.bootcamp.ws.domain.usecase.queries;
 
 import com.bootcamp.ws.domain.api.TechnologyAdapterPort;
+import com.bootcamp.ws.domain.model.Technology;
 import com.bootcamp.ws.domain.spi.ExistsTechnologiesServicePort;
+
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class ExistsTechnologiesUseCase implements ExistsTechnologiesServicePort {
 
@@ -11,10 +15,8 @@ public class ExistsTechnologiesUseCase implements ExistsTechnologiesServicePort 
         this.technologyAdapterPort = technologyAdapterPort;
     }
 
-//    @Override
-//    public Flux<TechnologyResponseDto> existsTechnologies(ExistsTechnologiesRequestDto dto) {
-//        return technologyAdapterPort.existsTechnologies(dto)
-//                .flatMap(technology -> Flux.just(mapper.toResponseTechnologyDto(technology)))
-//                .switchIfEmpty(Flux.error(new NoContentException(TechnicalMessage.NO_CONTENT)));
-//    }
+    @Override
+    public CompletableFuture<List<Technology>> existsTechnologies(List<Long> technologiesIds) {
+        return technologyAdapterPort.existsTechnologies(technologiesIds);
+    }
 }

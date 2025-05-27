@@ -1,5 +1,6 @@
 package com.bootcamp.ws.infrastructure.adapters.persistence;
 
+import com.bootcamp.ws.domain.model.TechnologyCapability;
 import com.bootcamp.ws.infrastructure.common.exception.ProcessorException;
 import com.bootcamp.ws.infrastructure.common.exception.TechnicalException;
 import com.bootcamp.ws.domain.api.TechnologyAdapterPort;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
@@ -44,6 +46,41 @@ public class TechnologyPersistenceAdapter implements TechnologyAdapterPort {
                     return technologyRepository.save(mapper.toEntityFromDomain(requestDto));
                 })
                 .map(mapper::toDomainFromEntity)
+                .switchIfEmpty(Mono.error(new ProcessorException(TechnicalMessage.BAD_REQUEST)))
+                .toFuture();
+    }
+
+    @Override
+    public CompletableFuture<List<Technology>> existsTechnologies(List<Long> technologiesIds) {
+        return technologyRepository.findAllById(technologiesIds)
+                .map(mapper::toDomainFromEntity)
+                .collectList()
+                .switchIfEmpty(Mono.error(new ProcessorException(TechnicalMessage.BAD_REQUEST)))
+                .toFuture();
+    }
+
+    @Override
+    public CompletableFuture<List<Technology>> findTechnologiesByIds(List<Long> technologiesIds) {
+        return technologyRepository.findAllById(technologiesIds)
+                .map(mapper::toDomainFromEntity)
+                .collectList()
+                .switchIfEmpty(Mono.error(new ProcessorException(TechnicalMessage.BAD_REQUEST)))
+                .toFuture();
+    }
+
+    @Override
+    public CompletableFuture<List<TechnologyCapability>> associateTechnologies(Long capabilityId, List<Long> technologiesIds) {
+        List<TechnologyCapability> domains = technologiesIds.stream()
+                .map(techId -> new TechnologyCapability.Builder()
+                        .technologyId(techId)
+                        .capabilityId(capabilityId)
+                        .build())
+                .toList();
+
+        return technologyCapabilityRepository
+                .saveAll(mapper.toTechnologyCapabilityEntitiesFromDomains(domains))
+                .collectList()
+                .map(mapper::toTechnologyCapabilityDomainsFromEntities) // convertir directo sin usar Mono
                 .switchIfEmpty(Mono.error(new ProcessorException(TechnicalMessage.BAD_REQUEST)))
                 .toFuture();
     }
