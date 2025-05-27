@@ -1,4 +1,4 @@
-package com.bootcamp.ws.domain.common;
+package com.bootcamp.ws.infrastructure.common;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;

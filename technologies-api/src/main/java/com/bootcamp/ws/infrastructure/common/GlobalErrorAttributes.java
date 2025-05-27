@@ -1,4 +1,4 @@
-package com.bootcamp.ws.domain.common;
+package com.bootcamp.ws.infrastructure.common;
 
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.reactive.error.ErrorAttributes;

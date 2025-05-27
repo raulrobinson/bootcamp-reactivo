@@ -9,7 +9,7 @@ public class TechnologyMapper {
 
     public TechnologyResponseDto toResponseTechnologyDto(Technology technology) {
         if (technology == null) return null;
-        return TechnologyResponseDto.builder()
+        return new TechnologyResponseDto.Builder()
                 .id(technology.getId())
                 .name(technology.getName())
                 .build();

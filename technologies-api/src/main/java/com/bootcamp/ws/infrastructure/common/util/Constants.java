@@ -1,4 +1,4 @@
-package com.bootcamp.ws.domain.common.util;
+package com.bootcamp.ws.infrastructure.common.util;
 
 import lombok.experimental.UtilityClass;
 

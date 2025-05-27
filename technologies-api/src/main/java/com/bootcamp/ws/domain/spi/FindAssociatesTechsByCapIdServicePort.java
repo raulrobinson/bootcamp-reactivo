@@ -1,8 +1,9 @@
 package com.bootcamp.ws.domain.spi;
 
 import com.bootcamp.ws.domain.dto.response.CapabilityWithTechnologiesResponseDto;
-import reactor.core.publisher.Mono;
+
+import java.util.Optional;
 
 public interface FindAssociatesTechsByCapIdServicePort {
-    Mono<CapabilityWithTechnologiesResponseDto> findAssociatesTechsByCapId(Long capabilityId);
+//    Optional<CapabilityWithTechnologiesResponseDto> findAssociatesTechsByCapId(Long capabilityId);
 }

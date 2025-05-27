@@ -1,8 +1,8 @@
 package com.bootcamp.ws.domain.usecase.queries;
 
 import com.bootcamp.ws.domain.api.TechnologyAdapterPort;
-import com.bootcamp.ws.domain.common.enums.TechnicalMessage;
-import com.bootcamp.ws.domain.common.exceptions.NoContentException;
+import com.bootcamp.ws.infrastructure.common.enums.TechnicalMessage;
+import com.bootcamp.ws.infrastructure.common.exceptions.NoContentException;
 import com.bootcamp.ws.domain.dto.request.ExistsTechnologiesRequestDto;
 import com.bootcamp.ws.domain.dto.response.TechnologyResponseDto;
 import com.bootcamp.ws.domain.mapper.TechnologyDomainMapper;
@@ -19,10 +19,10 @@ public class ExistsTechnologiesUseCase implements ExistsTechnologiesServicePort 
         this.mapper = mapper;
     }
 
-    @Override
-    public Flux<TechnologyResponseDto> existsTechnologies(ExistsTechnologiesRequestDto dto) {
-        return technologyAdapterPort.existsTechnologies(dto)
-                .flatMap(technology -> Flux.just(mapper.toResponseTechnologyDto(technology)))
-                .switchIfEmpty(Flux.error(new NoContentException(TechnicalMessage.NO_CONTENT)));
-    }
+//    @Override
+//    public Flux<TechnologyResponseDto> existsTechnologies(ExistsTechnologiesRequestDto dto) {
+//        return technologyAdapterPort.existsTechnologies(dto)
+//                .flatMap(technology -> Flux.just(mapper.toResponseTechnologyDto(technology)))
+//                .switchIfEmpty(Flux.error(new NoContentException(TechnicalMessage.NO_CONTENT)));
+//    }
 }

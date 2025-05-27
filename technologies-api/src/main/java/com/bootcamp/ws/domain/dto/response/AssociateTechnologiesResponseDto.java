@@ -1,22 +1,37 @@
 package com.bootcamp.ws.domain.dto.response;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.util.List;
-
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-@Schema(description = "Response DTO for Associate Technologies", title = "Response Associate Technologies DTO")
 public class AssociateTechnologiesResponseDto {
-    @Schema(description = "Capability ID", example = "1")
     private Long capabilityId;
-
-    @Schema(description = "Technology ID", example = "1")
     private Long technologyId;
+
+    public Long getCapabilityId() {
+        return capabilityId;
+    }
+
+    public Long getTechnologyId() {
+        return technologyId;
+    }
+
+    // Static inner Builder class
+    public static class Builder {
+        private Long capabilityId;
+        private Long technologyId;
+
+        public Builder capabilityId(Long capabilityId) {
+            this.capabilityId = capabilityId;
+            return this;
+        }
+
+        public Builder technologyId(Long technologyId) {
+            this.technologyId = technologyId;
+            return this;
+        }
+
+        public AssociateTechnologiesResponseDto build() {
+            AssociateTechnologiesResponseDto responseDto = new AssociateTechnologiesResponseDto();
+            responseDto.capabilityId = this.capabilityId;
+            responseDto.technologyId = this.technologyId;
+            return responseDto;
+        }
+    }
 }

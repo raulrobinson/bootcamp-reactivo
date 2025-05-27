@@ -1,6 +1,6 @@
-package com.bootcamp.ws.domain.common;
+package com.bootcamp.ws.infrastructure.common;
 
-import com.bootcamp.ws.domain.common.enums.TechnicalMessage;
+import com.bootcamp.ws.infrastructure.common.enums.TechnicalMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;

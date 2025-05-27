@@ -1,6 +1,6 @@
 package com.bootcamp.ws.infrastructure.inbound;
 
-import com.bootcamp.ws.domain.common.ErrorDto;
+import com.bootcamp.ws.infrastructure.common.ErrorDto;
 import com.bootcamp.ws.domain.dto.request.AssociateTechnologiesCreateRequestDto;
 import com.bootcamp.ws.domain.dto.request.ExistsTechnologiesRequestDto;
 import com.bootcamp.ws.domain.dto.request.TechnologyCreateRequestDto;
@@ -226,10 +226,12 @@ public class TechnologyRouter {
     })
     public RouterFunction<ServerResponse> route(TechnologyHandler technologyHandler) {
         return RouterFunctions.route()
-                .POST("/api/v1/technologies", technologyHandler::createTechnology)
-                .POST("/api/v1/technologies/exists", technologyHandler::existsTechnologies)
-                .POST("/api/v1/technologies/associate-technologies", technologyHandler::associateTechnologies)
-                .GET("/api/v1/technologies/find-associates-technologies-by-cap-id/{capabilityId}", technologyHandler::findAssociatesTechsByCapId)
+                .GET("/api/v1/technologies", technologyHandler::getAll)
+                .GET("/api/v1/technologies/exists-by-name", technologyHandler::existsByName)
+//                .POST("/api/v1/technologies", technologyHandler::createTechnology)
+//                .POST("/api/v1/technologies/exists", technologyHandler::existsTechnologies)
+//                .POST("/api/v1/technologies/associate-technologies", technologyHandler::associateTechnologies)
+//                .GET("/api/v1/technologies/find-associates-technologies-by-cap-id/{capabilityId}", technologyHandler::findAssociatesTechsByCapId)
                 .build();
     }
 }

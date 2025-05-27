@@ -1,6 +1,6 @@
-package com.bootcamp.ws.domain.common;
+package com.bootcamp.ws.infrastructure.common;
 
-import com.bootcamp.ws.domain.common.exceptions.*;
+import com.bootcamp.ws.infrastructure.common.exceptions.*;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.web.WebProperties;

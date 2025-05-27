@@ -12,7 +12,7 @@ public class TechnologyDomainMapper {
 
     public TechnologyCreateResponseDto toResponseTechnologyCreateDto(Technology technology) {
         if (technology == null) return null;
-        return TechnologyCreateResponseDto.builder()
+        return new TechnologyCreateResponseDto.Builder()
                 .id(technology.getId())
                 .name(technology.getName())
                 .description(technology.getDescription())
@@ -21,7 +21,7 @@ public class TechnologyDomainMapper {
 
     public TechnologyResponseDto toResponseTechnologyDto(Technology technology) {
         if (technology == null) return null;
-        return TechnologyResponseDto.builder()
+        return new TechnologyResponseDto.Builder()
                 .id(technology.getId())
                 .name(technology.getName())
                 .build();

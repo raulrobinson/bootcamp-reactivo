@@ -18,10 +18,10 @@ public class FindTechnologiesByIdsUseCase implements FindTechnologiesByIdsServic
         this.mapper = mapper;
     }
 
-    @Override
-    public Mono<List<TechnologyResponseDto>> findTechnologiesByIds(List<Long> technologiesIds) {
-        return technologyAdapterPort.findTechnologiesByIds(technologiesIds)
-                .collectList()
-                .map(mapper::toDtoListFromDomainList);
-    }
+//    @Override
+//    public Mono<List<TechnologyResponseDto>> findTechnologiesByIds(List<Long> technologiesIds) {
+//        return technologyAdapterPort.findTechnologiesByIds(technologiesIds)
+//                .collectList()
+//                .map(mapper::toDtoListFromDomainList);
+//    }
 }

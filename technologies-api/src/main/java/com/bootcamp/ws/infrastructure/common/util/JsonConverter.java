@@ -1,4 +1,4 @@
-package com.bootcamp.ws.domain.common.util;
+package com.bootcamp.ws.infrastructure.common.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;

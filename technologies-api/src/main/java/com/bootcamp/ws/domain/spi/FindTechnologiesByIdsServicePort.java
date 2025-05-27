@@ -1,10 +1,10 @@
 package com.bootcamp.ws.domain.spi;
 
 import com.bootcamp.ws.domain.dto.response.TechnologyResponseDto;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface FindTechnologiesByIdsServicePort {
-    Mono<List<TechnologyResponseDto>> findTechnologiesByIds(List<Long> technologiesIds);
+//    Optional<List<TechnologyResponseDto>> findTechnologiesByIds(List<Long> technologiesIds);
 }

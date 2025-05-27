@@ -4,9 +4,7 @@ import com.bootcamp.ws.domain.api.TechnologyAdapterPort;
 import com.bootcamp.ws.domain.mapper.TechnologyDomainMapper;
 import com.bootcamp.ws.domain.usecase.commands.AssociateTechnologiesUseCase;
 import com.bootcamp.ws.domain.usecase.commands.CreateTechnologyUseCase;
-import com.bootcamp.ws.domain.usecase.queries.ExistsTechnologiesUseCase;
-import com.bootcamp.ws.domain.usecase.queries.FindAssociatesTechsByCapIdUseCase;
-import com.bootcamp.ws.domain.usecase.queries.FindTechnologiesByIdsUseCase;
+import com.bootcamp.ws.domain.usecase.queries.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +12,17 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @RequiredArgsConstructor
 public class UseCaseConfig {
+
+    @Bean
+    public FindAllUseCase findAllUseCase(TechnologyAdapterPort technologyAdapterPort) {
+        return new FindAllUseCase(technologyAdapterPort);
+    }
+
+    @Bean
+    public ExistsByNameServicePortUseCase existsByNameUseCase(TechnologyAdapterPort technologyAdapterPort,
+                                                              TechnologyDomainMapper mapper) {
+        return new ExistsByNameServicePortUseCase(technologyAdapterPort, mapper);
+    }
 
     @Bean
     public CreateTechnologyUseCase createTechnologyUseCase(TechnologyAdapterPort technologyAdapterPort,

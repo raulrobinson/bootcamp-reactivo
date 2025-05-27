@@ -16,7 +16,7 @@ public class TechnologyEntityMapper {
 
     public Technology toDomainFromEntity(TechnologyEntity entity) {
         if (entity == null) return null;
-        return Technology.builder()
+        return new Technology.Builder()
                 .id(entity.getId())
                 .name(entity.getName())
                 .description(entity.getDescription())
@@ -29,7 +29,7 @@ public class TechnologyEntityMapper {
         if (entities == null) return null;
         return entities.collectList()
                 .map(entityList -> entityList.stream()
-                        .map(entity -> TechnologyCapability.builder()
+                        .map(entity -> new TechnologyCapability.Builder()
                                 .technologyId(entity.getTechnologyId())
                                 .capabilityId(entity.getCapabilityId())
                                 .build())

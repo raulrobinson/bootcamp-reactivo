@@ -1,4 +1,4 @@
-package com.bootcamp.ws.domain.common.enums;
+package com.bootcamp.ws.infrastructure.common.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

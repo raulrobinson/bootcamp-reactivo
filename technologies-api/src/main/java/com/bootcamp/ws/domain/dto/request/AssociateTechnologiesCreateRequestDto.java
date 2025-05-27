@@ -1,22 +1,41 @@
 package com.bootcamp.ws.domain.dto.request;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.util.List;
 
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-@Schema(description = "Request DTO for Associate Technologies", title = "Request Associate Technologies DTO")
 public class AssociateTechnologiesCreateRequestDto {
-    @Schema(description = "Technology ID", example = "1")
-    private Long capabilityId;
 
-    @Schema(description = "List of Technology IDs", example = "[1, 2, 3]")
+    private Long capabilityId;
     private List<Long> technologiesIds;
+
+    public Long getCapabilityId() {
+        return capabilityId;
+    }
+
+    public List<Long> getTechnologiesIds() {
+        return technologiesIds;
+    }
+
+    // Static inner Builder class
+    public static class Builder {
+
+        private Long capabilityId;
+        private List<Long> technologiesIds;
+
+        public Builder capabilityId(Long capabilityId) {
+            this.capabilityId = capabilityId;
+            return this;
+        }
+
+        public Builder technologiesIds(List<Long> technologiesIds) {
+            this.technologiesIds = technologiesIds;
+            return this;
+        }
+
+        public AssociateTechnologiesCreateRequestDto build() {
+            AssociateTechnologiesCreateRequestDto requestDto = new AssociateTechnologiesCreateRequestDto();
+            requestDto.capabilityId = this.capabilityId;
+            requestDto.technologiesIds = this.technologiesIds;
+            return requestDto;
+        }
+    }
 }
