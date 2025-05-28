@@ -15,8 +15,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 
 import reactor.core.publisher.Mono;
 
-import static com.bootcamp.ws.infrastructure.common.util.Constants.CREATE_ERROR;
-import static com.bootcamp.ws.infrastructure.common.util.Constants.LIST_ERROR;
+import static com.bootcamp.ws.infrastructure.common.util.Constants.*;
 
 @Slf4j
 @Component
@@ -56,27 +55,16 @@ public class TechnologyHandler {
                 .flatMap(tuple -> Mono.fromFuture(() ->
                         associateTechnologiesServicePort.associateTechnologies(tuple.getT1(), tuple.getT2())))
                 .flatMap(resultList -> ServerResponse.ok().bodyValue(resultList))
-                .doOnError(error -> log.error("Error associating technologies: {}", error.getMessage()))
+                .doOnError(error -> log.error(ASSOC_TECHS_ERROR, error.getMessage()))
                 .onErrorResume(globalErrorHandler::handle);
     }
 
     public Mono<ServerResponse> findAssociatesTechsByCapId(ServerRequest request) {
-        return null;
-    }
+        Long capabilityId = Long.parseLong(request.pathVariable("capabilityId"));
 
-//    public Mono<ServerResponse> findAssociatesTechsByCapId(ServerRequest request) {
-//        Long capabilityId = Long.parseLong(request.pathVariable("capabilityId"));
-//        return findAssociatesTechsByCapIdServicePort.findAssociatesTechsByCapId(capabilityId)
-//                .flatMap(technology -> ServerResponse.ok().bodyValue(technology))
-//                .doOnError(error -> log.error(RESOURCE_ERROR, error.getMessage()))
-//                .onErrorResume(BusinessException.class, ex -> buildErrorResponse(
-//                        HttpStatus.BAD_REQUEST,
-//                        ex.getTechnicalMessage(),
-//                        List.of(ErrorDto.builder()
-//                                .code(ex.getTechnicalMessage().getCode())
-//                                .message(ex.getTechnicalMessage().getMessage())
-//                                .parameter(ex.getTechnicalMessage().getParameter())
-//                                .build())
-//                ));
-//    }
+        return Mono.fromFuture(() -> findAssociatesTechsByCapIdServicePort.findAssociatesTechsByCapId(capabilityId))
+                .flatMap(resultList -> ServerResponse.ok().bodyValue(resultList))
+                .doOnError(error -> log.error(FIND_ASSOC_TECHS_ERROR, error.getMessage()))
+                .onErrorResume(globalErrorHandler::handle);
+    }
 }

@@ -85,6 +85,14 @@ public class TechnologyPersistenceAdapter implements TechnologyAdapterPort {
                 .toFuture();
     }
 
+    @Override
+    public CompletableFuture<List<TechnologyCapability>> findAllByCapabilityId(Long capabilityId) {
+        return mapper.toMonoTechnologyCapabilityListFromFluxEntities(technologyCapabilityRepository.findAllByCapabilityId(capabilityId))
+                .switchIfEmpty(Mono.error(new ProcessorException(TechnicalMessage.BAD_REQUEST)))
+                .toFuture();
+    }
+
+
 //    @Override
 //    public Flux<Technology> existsTechnologies(ExistsTechnologiesRequestDto dto) {
 //        return technologyRepository.findAllById(dto.getTechnologiesIds())
@@ -103,14 +111,6 @@ public class TechnologyPersistenceAdapter implements TechnologyAdapterPort {
 //        return mapper.toDomainsFromEntities(technologyCapabilityRepository.saveAll(entities).collectList())
 //                .switchIfEmpty(Mono.error(new ProcessorException("Error saving technologies-capabilities", TechnicalMessage.BAD_REQUEST)));
 //    }
-//
-//    @Override
-//    public CompletableFuture<List<TechnologyCapability>> findAllByCapabilityId(Long capabilityId) {
-//        return mapper.toMonoTechnologyCapabilityListFromFluxEntities(technologyCapabilityRepository.findAllByCapabilityId(capabilityId))
-//                .switchIfEmpty(Mono.error(new ProcessorException("Error fetching technologies-capabilities", TechnicalMessage.BAD_REQUEST)));
-//
-//    }
-//
 //    @Override
 //    public Flux<Technology> findTechnologiesByIds(List<Long> technologiesIds) {
 //        return technologyRepository.findAllById(technologiesIds)

@@ -5,7 +5,7 @@ import com.bootcamp.ws.infrastructure.inbound.dto.request.AssociateTechnologiesC
 import com.bootcamp.ws.infrastructure.inbound.dto.request.ExistsTechnologiesRequestDto;
 import com.bootcamp.ws.infrastructure.inbound.dto.request.TechnologyCreateRequestDto;
 import com.bootcamp.ws.infrastructure.inbound.dto.response.AssociateTechnologiesResponseDto;
-import com.bootcamp.ws.infrastructure.inbound.dto.response.CapabilityWithTechnologiesResponseDto;
+import com.bootcamp.ws.infrastructure.inbound.dto.response.doc.CapabilityWithTechnologiesResponseDto;
 import com.bootcamp.ws.infrastructure.inbound.dto.response.TechnologyResponseDto;
 import com.bootcamp.ws.infrastructure.inbound.handler.TechnologyHandler;
 import io.swagger.v3.oas.annotations.Parameter;
