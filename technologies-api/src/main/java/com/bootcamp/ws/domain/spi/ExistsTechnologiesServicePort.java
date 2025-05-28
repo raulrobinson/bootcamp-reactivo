@@ -1,9 +1,10 @@
 package com.bootcamp.ws.domain.spi;
 
-import com.bootcamp.ws.domain.dto.request.ExistsTechnologiesRequestDto;
-import com.bootcamp.ws.domain.dto.response.TechnologyResponseDto;
-import reactor.core.publisher.Flux;
+import com.bootcamp.ws.domain.model.Technology;
+
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public interface ExistsTechnologiesServicePort {
-    Flux<TechnologyResponseDto> existsTechnologies(ExistsTechnologiesRequestDto dto);
+    CompletableFuture<List<Technology>> existsTechnologies(List<Long> technologiesIds);
 }
