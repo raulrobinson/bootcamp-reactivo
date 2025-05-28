@@ -13,4 +13,5 @@ public interface TechnologyAdapterPort {
     CompletableFuture<List<Technology>> findTechnologiesByIds(List<Long> technologiesIds);
     CompletableFuture<List<TechnologyCapability>> associateTechnologies(Long capabilityId, List<Long> technologiesIds);
     CompletableFuture<List<TechnologyCapability>> findAllByCapabilityId(Long capabilityId);
+    CompletableFuture<Boolean> existsByCapabilityId(Long capabilityId);
 }

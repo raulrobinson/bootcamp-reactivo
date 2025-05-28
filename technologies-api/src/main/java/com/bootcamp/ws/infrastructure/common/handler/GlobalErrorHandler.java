@@ -3,6 +3,7 @@ package com.bootcamp.ws.infrastructure.common.handler;
 import com.bootcamp.ws.domain.exception.BusinessException;
 import com.bootcamp.ws.domain.exception.DuplicateResourceException;
 import com.bootcamp.ws.infrastructure.common.enums.TechnicalMessage;
+import com.bootcamp.ws.infrastructure.common.exception.DatabaseResourceException;
 import com.bootcamp.ws.infrastructure.common.exception.NoContentException;
 import com.bootcamp.ws.infrastructure.common.exception.ProcessorException;
 import com.bootcamp.ws.infrastructure.common.exception.TechnicalException;
@@ -69,6 +70,17 @@ public class GlobalErrorHandler {
                             TechnicalMessage.INTERNAL_ERROR_IN_ADAPTERS.getCode(),
                             ex.getMessage(),
                             TechnicalMessage.INTERNAL_ERROR_IN_ADAPTERS.getParameter(),
+                            Instant.now().toString()
+                    ))
+            );
+
+            case DatabaseResourceException ex -> buildErrorResponse(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    TechnicalMessage.DATABASE_ERROR,
+                    List.of(ErrorDto.of(
+                            TechnicalMessage.DATABASE_ERROR.getCode(),
+                            ex.getMessage(),
+                            TechnicalMessage.DATABASE_ERROR.getParameter(),
                             Instant.now().toString()
                     ))
             );

@@ -4,7 +4,6 @@ import com.bootcamp.ws.domain.api.TechnologyAdapterPort;
 import com.bootcamp.ws.domain.exception.DuplicateResourceException;
 import com.bootcamp.ws.domain.model.Technology;
 import com.bootcamp.ws.domain.spi.CreateTechnologyServicePort;
-import com.bootcamp.ws.infrastructure.common.enums.TechnicalMessage;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -22,7 +21,7 @@ public class CreateTechnologyUseCase implements CreateTechnologyServicePort {
                 .thenCompose(exists -> {
                     if (exists) {
                         return CompletableFuture.failedFuture(new DuplicateResourceException(
-                                TechnicalMessage.ALREADY_EXISTS,
+                                "Already exists",
                                 "TECH_DUPLICATE",
                                 request.getName()
                         ));
