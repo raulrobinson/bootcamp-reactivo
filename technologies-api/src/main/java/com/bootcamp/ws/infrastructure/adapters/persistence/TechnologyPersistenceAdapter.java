@@ -41,7 +41,10 @@ public class TechnologyPersistenceAdapter implements TechnologyAdapterPort {
         return technologyRepository.existsByName(requestDto.getName())
                 .flatMap(exists -> {
                     if (Boolean.TRUE.equals(exists)) {
-                        return Mono.error(new TechnicalException(TechnicalMessage.ALREADY_EXISTS));
+                        return Mono.error(new DuplicateResourceException(
+                                TechnicalMessage.ALREADY_EXISTS,
+                                "DUPLICATE_TECHNOLOGY",
+                                requestDto.getName()));
                     }
                     return technologyRepository.save(mapper.toEntityFromDomain(requestDto));
                 })
