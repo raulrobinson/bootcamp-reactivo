@@ -1,10 +1,5 @@
-package com.bootcamp.ws.domain.common.enums;
+package com.bootcamp.ws.infrastructure.common.enums;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
-@Getter
-@RequiredArgsConstructor
 public enum TechnicalMessage {
 
     INTERNAL_SERVER_ERROR("500", "Internal server error", ""),
@@ -20,4 +15,21 @@ public enum TechnicalMessage {
     private final String message;
     private final String parameter;
 
+    TechnicalMessage(String code, String message, String parameter) {
+        this.code = code;
+        this.message = message;
+        this.parameter = parameter;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public String getParameter() {
+        return parameter;
+    }
 }
