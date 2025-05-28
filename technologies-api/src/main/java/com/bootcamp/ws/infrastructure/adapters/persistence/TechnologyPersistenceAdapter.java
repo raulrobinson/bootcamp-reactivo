@@ -1,5 +1,6 @@
 package com.bootcamp.ws.infrastructure.adapters.persistence;
 
+import com.bootcamp.ws.domain.exception.DuplicateResourceException;
 import com.bootcamp.ws.domain.model.TechnologyCapability;
 import com.bootcamp.ws.infrastructure.common.exception.ProcessorException;
 import com.bootcamp.ws.infrastructure.common.exception.TechnicalException;
@@ -69,17 +70,28 @@ public class TechnologyPersistenceAdapter implements TechnologyAdapterPort {
 
     @Override
     public CompletableFuture<List<TechnologyCapability>> associateTechnologies(Long capabilityId, List<Long> technologiesIds) {
-        List<TechnologyCapability> domains = technologiesIds.stream()
-                .map(techId -> new TechnologyCapability.Builder()
-                        .technologyId(techId)
-                        .capabilityId(capabilityId)
-                        .build())
-                .toList();
-
-        return technologyCapabilityRepository
-                .saveAll(mapper.toTechnologyCapabilityEntitiesFromDomains(domains))
-                .collectList()
-                .map(mapper::toTechnologyCapabilityDomainsFromEntities) // convertir directo sin usar Mono
+        return technologyCapabilityRepository.existsByCapabilityId(capabilityId)
+                .flatMap(exists -> {
+                    if (Boolean.TRUE.equals(exists)) {
+                        return Mono.error(new DuplicateResourceException(
+                                TechnicalMessage.ALREADY_EXISTS,
+                                "DUPLICATE_TECHNOLOGY_CAPABILITY",
+                                String.valueOf(capabilityId)));
+                    }
+                    return technologyRepository.findAllById(technologiesIds)
+                            .collectList()
+                            .flatMap(techs -> {
+                                List<TechnologyCapability> domains = techs.stream()
+                                        .map(tech -> new TechnologyCapability.Builder()
+                                                .technologyId(tech.getId())
+                                                .capabilityId(capabilityId)
+                                                .build())
+                                        .toList();
+                                return technologyCapabilityRepository.saveAll(mapper.toTechnologyCapabilityEntitiesFromDomains(domains))
+                                        .collectList()
+                                        .map(mapper::toTechnologyCapabilityDomainsFromEntities);
+                            });
+                })
                 .switchIfEmpty(Mono.error(new ProcessorException(TechnicalMessage.BAD_REQUEST)))
                 .toFuture();
     }
