@@ -14,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -91,41 +90,4 @@ public class TechnologyPersistenceAdapter implements TechnologyAdapterPort {
                 .switchIfEmpty(Mono.error(new ProcessorException(TechnicalMessage.BAD_REQUEST)))
                 .toFuture();
     }
-
-
-//    @Override
-//    public Flux<Technology> existsTechnologies(ExistsTechnologiesRequestDto dto) {
-//        return technologyRepository.findAllById(dto.getTechnologiesIds())
-//                .flatMap(technologyEntity -> Mono.just(mapper.toDomainFromEntity(technologyEntity)))
-//                .switchIfEmpty(Mono.error(new ProcessorException("Error fetching technologies", TechnicalMessage.BAD_REQUEST)));
-//    }
-//
-//    @Override
-//    public CompletableFuture<List<TechnologyCapability>> associateTechnologies(AssociateTechnologiesCreateRequestDto dto) {
-//        List<TechnologyCapabilityEntity> entities = dto.getTechnologiesIds().stream()
-//                .map(techId -> TechnologyCapabilityEntity.builder()
-//                        .technologyId(techId)
-//                        .capabilityId(dto.getCapabilityId())
-//                        .build())
-//                .toList();
-//        return mapper.toDomainsFromEntities(technologyCapabilityRepository.saveAll(entities).collectList())
-//                .switchIfEmpty(Mono.error(new ProcessorException("Error saving technologies-capabilities", TechnicalMessage.BAD_REQUEST)));
-//    }
-//    @Override
-//    public Flux<Technology> findTechnologiesByIds(List<Long> technologiesIds) {
-//        return technologyRepository.findAllById(technologiesIds)
-//                .switchIfEmpty(Mono.error(new NoContentException(TechnicalMessage.NO_CONTENT)))
-//                .flatMap(technologyEntity -> Mono.just(mapper.toDomainFromEntity(technologyEntity)))
-//                .switchIfEmpty(Mono.error(new ProcessorException("Error fetching technologies", TechnicalMessage.BAD_REQUEST)));
-//    }
-//
-//    @Override
-//    public CompletableFuture<Boolean> existsByCapabilityId(Long capabilityId) {
-//        return technologyCapabilityRepository.existsByCapabilityId(capabilityId)
-//                .flatMap(exists -> {
-//                    if (exists) return Mono.just(true);
-//                    return Mono.just(false);
-//                })
-//                .switchIfEmpty(Mono.error(new ProcessorException("Error checking technologies-capabilities existence", TechnicalMessage.BAD_REQUEST)));
-//    }
 }
