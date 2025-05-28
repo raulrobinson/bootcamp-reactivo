@@ -33,7 +33,9 @@ public class TechnologyPersistenceAdapter implements TechnologyAdapterPort {
         return technologyRepository.existsByName(name)
                 .switchIfEmpty(Mono.error(new TechnicalException(TechnicalMessage.NOT_FOUND)))
                 .onErrorMap(e -> {
-                    if (e instanceof TechnicalException) return e;
+                    if (e instanceof TechnicalException || e instanceof DatabaseResourceException) {
+                        return e;
+                    }
                     return new DatabaseResourceException("Error accessing database", e);
                 })
                 .toFuture();
@@ -45,7 +47,9 @@ public class TechnologyPersistenceAdapter implements TechnologyAdapterPort {
                 .map(mapper::toDomainFromEntity)
                 .switchIfEmpty(Mono.error(new ProcessorException(TechnicalMessage.BAD_REQUEST)))
                 .onErrorMap(e -> {
-                    if (e instanceof TechnicalException) return e;
+                    if (e instanceof TechnicalException || e instanceof DatabaseResourceException) {
+                        return e;
+                    }
                     return new DatabaseResourceException("Error accessing database", e);
                 })
                 .toFuture();
@@ -56,9 +60,16 @@ public class TechnologyPersistenceAdapter implements TechnologyAdapterPort {
         return technologyRepository.findAllById(technologiesIds)
                 .map(mapper::toDomainFromEntity)
                 .collectList()
-                .switchIfEmpty(Mono.error(new ProcessorException(TechnicalMessage.BAD_REQUEST)))
+                .flatMap(list -> {
+                    if (list == null || list.isEmpty()) {
+                        return Mono.error(new ProcessorException(TechnicalMessage.BAD_REQUEST));
+                    }
+                    return Mono.just(list);
+                })
                 .onErrorMap(e -> {
-                    if (e instanceof TechnicalException) return e;
+                    if (e instanceof TechnicalException || e instanceof DatabaseResourceException) {
+                        return e;
+                    }
                     return new DatabaseResourceException("Error accessing database", e);
                 })
                 .toFuture();
@@ -69,9 +80,16 @@ public class TechnologyPersistenceAdapter implements TechnologyAdapterPort {
         return technologyRepository.findAllById(technologiesIds)
                 .map(mapper::toDomainFromEntity)
                 .collectList()
-                .switchIfEmpty(Mono.error(new ProcessorException(TechnicalMessage.BAD_REQUEST)))
+                .flatMap(list -> {
+                    if (list.isEmpty()) {
+                        return Mono.error(new ProcessorException(TechnicalMessage.BAD_REQUEST));
+                    }
+                    return Mono.just(list);
+                })
                 .onErrorMap(e -> {
-                    if (e instanceof TechnicalException) return e;
+                    if (e instanceof TechnicalException || e instanceof DatabaseResourceException) {
+                        return e;
+                    }
                     return new DatabaseResourceException("Error accessing database", e);
                 })
                 .toFuture();
@@ -91,7 +109,9 @@ public class TechnologyPersistenceAdapter implements TechnologyAdapterPort {
                 .collectList()                                                      // Mono<List<Entity>>
                 .map(mapper::toTechnologyCapabilityDomainsFromEntities)             // Mono<List<Domain>>
                 .onErrorMap(e -> {
-                    if (e instanceof TechnicalException) return e;
+                    if (e instanceof TechnicalException || e instanceof DatabaseResourceException) {
+                        return e;
+                    }
                     return new DatabaseResourceException("Error accessing database", e);
                 })
                 .toFuture();                                                        // CompletableFuture<List<Domain>>
@@ -99,10 +119,18 @@ public class TechnologyPersistenceAdapter implements TechnologyAdapterPort {
 
     @Override
     public CompletableFuture<List<TechnologyCapability>> findAllByCapabilityId(Long capabilityId) {
-        return mapper.toMonoTechnologyCapabilityListFromFluxEntities(technologyCapabilityRepository.findAllByCapabilityId(capabilityId))
-                .switchIfEmpty(Mono.error(new ProcessorException(TechnicalMessage.BAD_REQUEST)))
+        return mapper.toMonoTechnologyCapabilityListFromFluxEntities(
+                        technologyCapabilityRepository.findAllByCapabilityId(capabilityId))
+                .flatMap(list -> {
+                    if (list == null || list.isEmpty()) {
+                        return Mono.error(new ProcessorException(TechnicalMessage.BAD_REQUEST));
+                    }
+                    return Mono.just(list);
+                })
                 .onErrorMap(e -> {
-                    if (e instanceof TechnicalException) return e;
+                    if (e instanceof TechnicalException || e instanceof DatabaseResourceException) {
+                        return e;
+                    }
                     return new DatabaseResourceException("Error accessing database", e);
                 })
                 .toFuture();
@@ -113,7 +141,9 @@ public class TechnologyPersistenceAdapter implements TechnologyAdapterPort {
         return technologyCapabilityRepository.existsByCapabilityId(capabilityId)
                 .switchIfEmpty(Mono.error(new ProcessorException(TechnicalMessage.NOT_FOUND)))
                 .onErrorMap(e -> {
-                    if (e instanceof TechnicalException) return e;
+                    if (e instanceof TechnicalException || e instanceof DatabaseResourceException) {
+                        return e;
+                    }
                     return new DatabaseResourceException("Error accessing database", e);
                 })
                 .toFuture();
