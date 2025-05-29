@@ -1,6 +1,8 @@
 package com.bootcamp.ws.domain.usecase.queries;
 
 import com.bootcamp.ws.domain.api.TechnologyAdapterPort;
+import com.bootcamp.ws.domain.exception.BusinessException;
+import com.bootcamp.ws.domain.exception.enums.TechnicalMessage;
 import com.bootcamp.ws.domain.model.Technology;
 import com.bootcamp.ws.domain.spi.FindTechnologiesByIdsServicePort;
 
@@ -17,6 +19,12 @@ public class FindTechnologiesByIdsUseCase implements FindTechnologiesByIdsServic
 
     @Override
     public CompletableFuture<List<Technology>> findTechnologiesByIds(List<Long> technologiesIds) {
-        return technologyAdapterPort.findTechnologiesByIds(technologiesIds);
+        return technologyAdapterPort.findTechnologiesByIds(technologiesIds)
+                .thenApply(technologies -> {
+                    if (technologies.isEmpty()) {
+                        throw new BusinessException(TechnicalMessage.NOT_FOUND, "No technologies found for the provided IDs");
+                    }
+                    return technologies;
+                });
     }
 }

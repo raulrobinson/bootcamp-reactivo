@@ -1,4 +1,4 @@
-package com.bootcamp.ws.infrastructure.common.enums;
+package com.bootcamp.ws.domain.exception.enums;
 
 public enum TechnicalMessage {
 

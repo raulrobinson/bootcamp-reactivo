@@ -1,6 +1,6 @@
 package com.bootcamp.ws.domain.exception;
 
-import com.bootcamp.ws.infrastructure.common.enums.TechnicalMessage;
+import com.bootcamp.ws.domain.exception.enums.TechnicalMessage;
 
 public class DuplicateResourceException extends RuntimeException {
 

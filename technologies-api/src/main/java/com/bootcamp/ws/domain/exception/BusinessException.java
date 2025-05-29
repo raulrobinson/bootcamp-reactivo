@@ -1,13 +1,15 @@
 package com.bootcamp.ws.domain.exception;
 
+import com.bootcamp.ws.domain.exception.enums.TechnicalMessage;
+
 public class BusinessException extends RuntimeException {
     private final String code;
     private final String parameter;
 
-    public BusinessException(String message) {
-        super(message);
+    public BusinessException(TechnicalMessage message, String parameter) {
+        super(message.getMessage());
         this.code = "BUSINESS_ERROR";
-        this.parameter = null;
+        this.parameter = parameter;
     }
 
     public BusinessException(String message, String code, String parameter) {

@@ -2,7 +2,7 @@ package com.bootcamp.ws.infrastructure.common.handler;
 
 import com.bootcamp.ws.domain.exception.BusinessException;
 import com.bootcamp.ws.domain.exception.DuplicateResourceException;
-import com.bootcamp.ws.infrastructure.common.enums.TechnicalMessage;
+import com.bootcamp.ws.domain.exception.enums.TechnicalMessage;
 import com.bootcamp.ws.infrastructure.common.exception.NoContentException;
 import com.bootcamp.ws.infrastructure.common.exception.ProcessorException;
 import com.bootcamp.ws.infrastructure.common.exception.TechnicalException;

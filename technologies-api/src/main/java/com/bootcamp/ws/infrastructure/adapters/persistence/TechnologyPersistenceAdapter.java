@@ -9,7 +9,7 @@ import com.bootcamp.ws.infrastructure.adapters.persistence.mapper.TechnologyEnti
 import com.bootcamp.ws.domain.model.Technology;
 import com.bootcamp.ws.infrastructure.adapters.persistence.repository.TechnologyCapabilityRepository;
 import com.bootcamp.ws.infrastructure.adapters.persistence.repository.TechnologyRepository;
-import com.bootcamp.ws.infrastructure.common.enums.TechnicalMessage;
+import com.bootcamp.ws.domain.exception.enums.TechnicalMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -85,7 +85,7 @@ public class TechnologyPersistenceAdapter implements TechnologyAdapterPort {
                             .collectList()
                             .flatMap(techs -> {
                                 List<TechnologyCapability> domains = techs.stream()
-                                        .map(tech -> new TechnologyCapability.Builder()
+                                        .map(tech -> TechnologyCapability.builder()
                                                 .technologyId(tech.getId())
                                                 .capabilityId(capabilityId)
                                                 .build())

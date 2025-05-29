@@ -1,6 +1,8 @@
 package com.bootcamp.ws.domain.usecase.commands;
 
 import com.bootcamp.ws.domain.api.TechnologyAdapterPort;
+import com.bootcamp.ws.domain.exception.BusinessException;
+import com.bootcamp.ws.domain.exception.enums.TechnicalMessage;
 import com.bootcamp.ws.domain.model.TechnologyCapability;
 import com.bootcamp.ws.domain.spi.AssociateTechnologiesServicePort;
 
@@ -17,6 +19,14 @@ public class AssociateTechnologiesUseCase implements AssociateTechnologiesServic
 
     @Override
     public CompletableFuture<List<TechnologyCapability>> associateTechnologies(Long capabilityId, List<Long> technologiesIds) {
-        return technologyAdapterPort.associateTechnologies(capabilityId, technologiesIds);
+        return technologyAdapterPort.associateTechnologies(capabilityId, technologiesIds)
+                .thenCompose(
+                        technologyCapabilities -> {
+                            if (technologyCapabilities.isEmpty()) {
+                                return CompletableFuture.failedFuture(new BusinessException(TechnicalMessage.NOT_FOUND, "No technologies associated"));
+                            }
+                            return CompletableFuture.completedFuture(technologyCapabilities);
+                        }
+                );
     }
 }

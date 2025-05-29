@@ -18,7 +18,7 @@ public class TechnologyMapper {
 
     public Technology toDomainFromDto(TechnologyCreateRequestDto dto) {
         return Optional.ofNullable(dto)
-                .map(d -> new Technology.Builder()
+                .map(d -> Technology.builder()
                         .name(d.getName())
                         .description(d.getDescription())
                         .build())

@@ -2,9 +2,9 @@ package com.bootcamp.ws.domain.usecase.commands;
 
 import com.bootcamp.ws.domain.api.TechnologyAdapterPort;
 import com.bootcamp.ws.domain.exception.DuplicateResourceException;
+import com.bootcamp.ws.domain.exception.enums.TechnicalMessage;
 import com.bootcamp.ws.domain.model.Technology;
 import com.bootcamp.ws.domain.spi.CreateTechnologyServicePort;
-import com.bootcamp.ws.infrastructure.common.enums.TechnicalMessage;
 
 import java.util.concurrent.CompletableFuture;
 

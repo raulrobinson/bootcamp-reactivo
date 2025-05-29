@@ -2,6 +2,7 @@ package com.bootcamp.ws.domain.usecase.queries;
 
 import com.bootcamp.ws.domain.api.TechnologyAdapterPort;
 import com.bootcamp.ws.domain.exception.BusinessException;
+import com.bootcamp.ws.domain.exception.enums.TechnicalMessage;
 import com.bootcamp.ws.domain.model.TechnologyCapability;
 import com.bootcamp.ws.domain.spi.FindAssociatesTechsByCapIdServicePort;
 
@@ -24,7 +25,7 @@ public class FindAssociatesTechsByCapIdUseCase implements FindAssociatesTechsByC
                 .thenCompose(techCaps -> {
                     if (techCaps == null || techCaps.isEmpty()) {
                         return CompletableFuture.failedFuture(
-                                new BusinessException("No technologies associated with the given capability ID.")
+                                new BusinessException(TechnicalMessage.NOT_FOUND, "No technologies associated with the given capability ID.")
                         );
                     }
 
@@ -33,16 +34,14 @@ public class FindAssociatesTechsByCapIdUseCase implements FindAssociatesTechsByC
 
                     if (!allMatch) {
                         return CompletableFuture.failedFuture(
-                                new BusinessException("All technology capabilities must match the provided capability ID.")
+                                new BusinessException(TechnicalMessage.INVALID_REQUEST, "All technology capabilities must match the provided capability ID.")
                         );
                     }
 
-                    List<Long> techIds = techCaps.stream()
-                            .map(TechnologyCapability::getTechnologyId)
-                            .distinct()
-                            .toList();
-
-                    return technologyAdapterPort.findTechnologiesByIds(techIds)
+                    return technologyAdapterPort.findTechnologiesByIds(techCaps.stream()
+                                    .map(TechnologyCapability::getTechnologyId)
+                                    .distinct()
+                                    .toList())
                             .thenApply(technologies -> {
                                 List<Map<String, Object>> techList = technologies.stream()
                                         .map(tech -> {
