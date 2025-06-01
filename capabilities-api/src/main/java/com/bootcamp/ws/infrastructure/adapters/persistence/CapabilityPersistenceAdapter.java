@@ -36,18 +36,6 @@ public class CapabilityPersistenceAdapter implements CapabilityPersistenceAdapte
                 .map(mapper::toCapabilityDomainFromEntity);
     }
 
-//    @Override
-//    public Mono<List<FindAssociatesTechsByCapIdResponseDto>> findAssociatesTechsByCapId(Long capabilityId) {
-//        return technologyExternalAdapterPort.findAssociatesTechsByCapId(capabilityId);
-//                //.map(mapper::toCapabilityWithTechnologiesDtoFromEntity);
-//    }
-
-//    @Override
-//    public Flux<Capability> existsCapabilities(List<Long> req) {
-//        return capabilityRepository.findAllById(req)
-//                .map(mapper::toCapabilityDomainFromEntity);
-//    }
-
     @Override
     public Mono<Boolean> existsByName(String name) {
         return capabilityRepository.existsByName(name);
