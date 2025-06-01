@@ -11,6 +11,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @AllArgsConstructor
 @Builder
 public class CapabilityBootcampEntity {
+
     @Column("capability_id")
     private Long capabilityId;
 

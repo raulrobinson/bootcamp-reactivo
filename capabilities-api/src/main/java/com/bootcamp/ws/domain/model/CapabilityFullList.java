@@ -8,13 +8,11 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
-public class Capability {
+@AllArgsConstructor
+@NoArgsConstructor
+public class CapabilityFullList {
     private Long id;
     private String name;
-    private String description;
-    private List<Long> technologyIds;
+    private List<Technology> technologies;
 }
-

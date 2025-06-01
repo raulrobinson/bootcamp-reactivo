@@ -6,11 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
+@Builder(toBuilder = true)
 @AllArgsConstructor
-@Builder
-public class CapabilityBootcamp {
+@NoArgsConstructor
+public class TechnologyCapability {
+    private Long technologyId;
     private Long capabilityId;
-    private Long bootcampId;
 }
-

@@ -1,11 +1,10 @@
 package com.bootcamp.ws.infrastructure.inbound.handler;
 
 import com.bootcamp.ws.domain.api.TechnologyExternalAdapterPort;
-import com.bootcamp.ws.infrastructure.adapters.outbound.dto.ExistsTechnologiesDto;
-import com.bootcamp.ws.infrastructure.adapters.outbound.dto.TechnologyDto;
-import com.bootcamp.ws.infrastructure.adapters.outbound.dto.response.FindAssociatesTechsByCapIdResponseDto;
-import com.bootcamp.ws.infrastructure.adapters.outbound.model.TechnologyAssociateTechnologies;
-import com.bootcamp.ws.infrastructure.adapters.outbound.model.TechnologyCapability;
+import com.bootcamp.ws.infrastructure.inbound.dto.ExistsTechnologiesDto;
+import com.bootcamp.ws.domain.model.Technology;
+import com.bootcamp.ws.domain.model.TechnologyAssociateTechnologies;
+import com.bootcamp.ws.domain.model.TechnologyCapability;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
@@ -23,8 +22,8 @@ public class TestHandler {
 
     private final TechnologyExternalAdapterPort technologyExternalAdapterPort;
 
-    public Mono<List<TechnologyDto>> existsTechnologies(ExistsTechnologiesDto dto) {
-        return technologyExternalAdapterPort.existsTechnologies(dto)
+    public Mono<List<Technology>> existsTechnologies(ExistsTechnologiesDto dto) {
+        return technologyExternalAdapterPort.findTechnologiesByIdIn(dto)
                 .doOnNext(technologyDtos -> log.info("Technologies found: {}", technologyDtos))
                 .doOnError(error -> log.error("Error occurred while checking technologies: {}", error.getMessage()));
     }
@@ -35,11 +34,11 @@ public class TestHandler {
                 .doOnError(error -> log.error("Error occurred while associating technologies: {}", error.getMessage()));
     }
 
-    public Mono<List<FindAssociatesTechsByCapIdResponseDto>> findAssociatesTechsByCapId(Long capabilityId) {
-        return technologyExternalAdapterPort.findAssociatesTechsByCapId(capabilityId)
-                .doOnNext(capabilityWithTechnologiesDto -> log.info("Capability with technologies found: {}", capabilityWithTechnologiesDto))
-                .doOnError(error -> log.error("Error occurred while finding associated technologies: {}", error.getMessage()));
-    }
+//    public Mono<List<FindAssociatesTechsByCapIdResponseDto>> findAssociatesTechsByCapId(Long capabilityId) {
+//        return technologyExternalAdapterPort.findAssociatesTechsByCapId(capabilityId)
+//                .doOnNext(capabilityWithTechnologiesDto -> log.info("Capability with technologies found: {}", capabilityWithTechnologiesDto))
+//                .doOnError(error -> log.error("Error occurred while finding associated technologies: {}", error.getMessage()));
+//    }
 
     public Mono<ServerResponse> existsTechnologiesInTechnologiesApi(ServerRequest request) {
         return request.bodyToMono(new ParameterizedTypeReference<List<Long>>() {})
@@ -51,10 +50,10 @@ public class TestHandler {
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
-    public Mono<ServerResponse> findAssocTechsByCapId(ServerRequest request) {
-        Long capabilityId = Long.parseLong(request.pathVariable("capabilityId"));
-        return findAssociatesTechsByCapId(capabilityId)
-                .flatMap(technology -> ServerResponse.ok().bodyValue(technology))
-                .switchIfEmpty(ServerResponse.notFound().build());
-    }
+//    public Mono<ServerResponse> findAssocTechsByCapId(ServerRequest request) {
+//        Long capabilityId = Long.parseLong(request.pathVariable("capabilityId"));
+//        return findAssociatesTechsByCapId(capabilityId)
+//                .flatMap(technology -> ServerResponse.ok().bodyValue(technology))
+//                .switchIfEmpty(ServerResponse.notFound().build());
+//    }
 }

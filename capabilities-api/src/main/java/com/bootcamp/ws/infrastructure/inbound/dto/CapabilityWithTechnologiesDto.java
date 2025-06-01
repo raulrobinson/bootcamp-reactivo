@@ -1,16 +1,17 @@
-package com.bootcamp.ws.domain.model;
+package com.bootcamp.ws.infrastructure.inbound.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class CapabilityBootcamp {
-    private Long capabilityId;
-    private Long bootcampId;
-}
+import java.util.List;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class CapabilityWithTechnologiesDto {
+    private Long capabilityId;
+    private List<Long> technologiesIds;
+}
