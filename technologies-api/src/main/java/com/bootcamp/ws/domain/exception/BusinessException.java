@@ -1,7 +1,8 @@
 package com.bootcamp.ws.domain.exception;
 
-import com.bootcamp.ws.domain.exception.enums.TechnicalMessage;
+import lombok.Getter;
 
+@Getter
 public class BusinessException extends RuntimeException {
     private final String code;
     private final String parameter;
@@ -16,13 +17,5 @@ public class BusinessException extends RuntimeException {
         super(message);
         this.code = code;
         this.parameter = parameter;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public String getParameter() {
-        return parameter;
     }
 }

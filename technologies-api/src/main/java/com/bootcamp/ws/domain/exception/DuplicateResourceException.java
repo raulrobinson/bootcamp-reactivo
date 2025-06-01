@@ -1,7 +1,8 @@
 package com.bootcamp.ws.domain.exception;
 
-import com.bootcamp.ws.domain.exception.enums.TechnicalMessage;
+import lombok.Getter;
 
+@Getter
 public class DuplicateResourceException extends RuntimeException {
 
     private final String code;
@@ -11,13 +12,5 @@ public class DuplicateResourceException extends RuntimeException {
         super(message.getMessage());
         this.code = code;
         this.parameter = parameter;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public String getParameter() {
-        return parameter;
     }
 }

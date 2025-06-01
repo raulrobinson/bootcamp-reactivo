@@ -1,9 +1,9 @@
 package com.bootcamp.ws.infrastructure.adapters.persistence.mapper;
 
+import com.bootcamp.ws.domain.model.Technology;
 import com.bootcamp.ws.domain.model.TechnologyCapability;
 import com.bootcamp.ws.infrastructure.adapters.persistence.entity.TechnologyCapabilityEntity;
 import com.bootcamp.ws.infrastructure.adapters.persistence.entity.TechnologyEntity;
-import com.bootcamp.ws.domain.model.Technology;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -19,8 +19,6 @@ public class TechnologyEntityMapper {
                 .id(entity.getId())
                 .name(entity.getName())
                 .description(entity.getDescription())
-                .createdAt(String.valueOf(entity.getCreatedAt()))
-                .updatedAt(String.valueOf(entity.getUpdatedAt()))
                 .build();
     }
 
@@ -49,16 +47,6 @@ public class TechnologyEntityMapper {
         if (entities == null || entities.isEmpty()) return List.of();
         return entities.stream()
                 .map(entity -> TechnologyCapabilityEntity.builder()
-                        .technologyId(entity.getTechnologyId())
-                        .capabilityId(entity.getCapabilityId())
-                        .build())
-                .toList();
-    }
-
-    public List<TechnologyCapability> toTechnologyCapabilityDomainsFromEntities(List<TechnologyCapabilityEntity> entities) {
-        if (entities == null || entities.isEmpty()) return List.of();
-        return entities.stream()
-                .map(entity -> TechnologyCapability.builder()
                         .technologyId(entity.getTechnologyId())
                         .capabilityId(entity.getCapabilityId())
                         .build())
