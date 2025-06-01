@@ -89,13 +89,19 @@ public class CapabilityPersistenceAdapter implements CapabilityPersistenceAdapte
                 .as(tx::transactional);
     }
 
-    public Mono<CapabilityFullList> buildCapabilityResponseDto(Capability capability) {
-        return capabilityRepository.findById(capability.getId())
+    @Override
+    public Mono<CapabilityFullList> findCapabilityById(Long id) {
+        // 1. Buscar la capacidad por ID
+        return capabilityRepository.findById(id)
                 .flatMap(cap -> {
                     if (cap == null) return Mono.error(new ProcessorException(TechnicalMessage.NOT_FOUND));
-                    return technologyExternalAdapterPort.findAssociatesTechsByCapId(capability.getId())
+
+                    // 2. Buscar las tecnologías asociadas a la capacidad
+                    return technologyExternalAdapterPort.findAssociatesTechsByCapId(id)
                             .flatMap(response -> {
                                 if (response == null) return Mono.error(new ProcessorException(TechnicalMessage.NOT_FOUND));
+
+                                // 3. Mapear la respuesta a CapabilityFullList
                                 return Mono.just(CapabilityFullList.builder()
                                         .id(cap.getId())
                                         .name(cap.getName())
@@ -108,17 +114,6 @@ public class CapabilityPersistenceAdapter implements CapabilityPersistenceAdapte
                                         .build());
                             });
                 });
-    }
-
-
-
-
-    @Override
-    public Mono<CapabilityFullList> findCapabilityById(Long id) {
-        return capabilityRepository.findById(id)
-                .switchIfEmpty(Mono.error(new ProcessorException(TechnicalMessage.NOT_FOUND)))
-                .flatMap(cap -> buildCapabilityResponseDto(mapper.toCapabilityDomainFromEntity(cap)))
-                .onErrorResume(e -> Mono.error(new ProcessorException(TechnicalMessage.INTERNAL_ERROR_IN_ADAPTERS, e)));
     }
 
 
