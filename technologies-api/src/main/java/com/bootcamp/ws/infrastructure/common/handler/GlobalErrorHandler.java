@@ -2,11 +2,11 @@ package com.bootcamp.ws.infrastructure.common.handler;
 
 import com.bootcamp.ws.domain.exception.BusinessException;
 import com.bootcamp.ws.domain.exception.DuplicateResourceException;
-import com.bootcamp.ws.domain.exception.enums.TechnicalMessage;
+import com.bootcamp.ws.domain.exception.TechnicalMessage;
+import com.bootcamp.ws.infrastructure.common.exception.DatabaseResourceException;
 import com.bootcamp.ws.infrastructure.common.exception.NoContentException;
 import com.bootcamp.ws.infrastructure.common.exception.ProcessorException;
 import com.bootcamp.ws.infrastructure.common.exception.TechnicalException;
-import com.bootcamp.ws.infrastructure.inbound.dto.response.ErrorDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -23,74 +23,94 @@ import java.util.List;
 @Order(-2)
 public class GlobalErrorHandler {
 
-    public Mono<ServerResponse> handle(Throwable throwable) {
+    public Mono<ServerResponse> handle(Throwable throwable, String messageId) {
         log.error("Exception captured globally: {}", throwable.toString());
 
         return switch (throwable) {
             case BusinessException ex -> buildErrorResponse(
                     HttpStatus.BAD_REQUEST,
+                    messageId,
                     TechnicalMessage.BAD_REQUEST,
-                    List.of(ErrorDto.of(
-                            TechnicalMessage.BAD_REQUEST.getCode(),
+                    List.of(ErrorDTO.of(
                             ex.getMessage(),
-                            ex.getParameter(),
-                            Instant.now().toString()
+                            ex.getParameter()
                     ))
             );
 
             case DuplicateResourceException ex -> buildErrorResponse(
                     HttpStatus.CONFLICT,
+                    messageId,
                     TechnicalMessage.ALREADY_EXISTS,
-                    List.of(ErrorDto.of(
-                            TechnicalMessage.ALREADY_EXISTS.getCode(),
+                    List.of(ErrorDTO.of(
                             ex.getMessage(),
-                            ex.getParameter(),
-                            Instant.now().toString()
+                            ex.getParameter()
                     ))
             );
 
-            case NoContentException ignored -> ServerResponse.noContent().build();
+            case NoContentException ex -> buildErrorResponse(
+                    HttpStatus.BAD_REQUEST,
+                    messageId,
+                    TechnicalMessage.NO_CONTENT,
+                    List.of(ErrorDTO.of(
+                            ex.getMessage(),
+                            TechnicalMessage.NO_CONTENT.getParameter()
+                    ))
+            );
 
             case ProcessorException ex -> buildErrorResponse(
                     HttpStatus.INTERNAL_SERVER_ERROR,
+                    messageId,
                     TechnicalMessage.INTERNAL_SERVER_ERROR,
-                    List.of(ErrorDto.of(
-                            TechnicalMessage.INTERNAL_SERVER_ERROR.getCode(),
+                    List.of(ErrorDTO.of(
                             ex.getMessage(),
-                            TechnicalMessage.INTERNAL_SERVER_ERROR.getParameter(),
-                            Instant.now().toString()
+                            TechnicalMessage.INTERNAL_SERVER_ERROR.getParameter()
                     ))
             );
 
             case TechnicalException ex -> buildErrorResponse(
                     HttpStatus.SERVICE_UNAVAILABLE,
+                    messageId,
                     TechnicalMessage.INTERNAL_ERROR_IN_ADAPTERS,
-                    List.of(ErrorDto.of(
-                            TechnicalMessage.INTERNAL_ERROR_IN_ADAPTERS.getCode(),
+                    List.of(ErrorDTO.of(
                             ex.getMessage(),
-                            TechnicalMessage.INTERNAL_ERROR_IN_ADAPTERS.getParameter(),
-                            Instant.now().toString()
+                            TechnicalMessage.INTERNAL_ERROR_IN_ADAPTERS.getParameter()
+                    ))
+            );
+
+            case DatabaseResourceException ex -> buildErrorResponse(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    messageId,
+                    TechnicalMessage.DATABASE_ERROR,
+                    List.of(ErrorDTO.of(
+                            ex.getMessage(),
+                            TechnicalMessage.DATABASE_ERROR.getParameter()
                     ))
             );
 
             default -> buildErrorResponse(
                     HttpStatus.INTERNAL_SERVER_ERROR,
+                    messageId,
                     TechnicalMessage.INTERNAL_SERVER_ERROR,
-                    List.of(ErrorDto.of(
-                            TechnicalMessage.INTERNAL_SERVER_ERROR.getCode(),
+                    List.of(ErrorDTO.of(
                             throwable.getMessage(),
-                            TechnicalMessage.INTERNAL_SERVER_ERROR.getParameter(),
-                            Instant.now().toString()
+                            TechnicalMessage.INTERNAL_SERVER_ERROR.getParameter()
                     ))
             );
         };
     }
 
-    private Mono<ServerResponse> buildErrorResponse(HttpStatus status,
+    private Mono<ServerResponse> buildErrorResponse(HttpStatus httpStatus,
+                                                    String messageId,
                                                     TechnicalMessage technicalMessage,
-                                                    List<ErrorDto> errors) {
-        return ServerResponse.status(status)
+                                                    List<ErrorDTO> errors) {
+        return ServerResponse.status(httpStatus)
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(errors);
+                .bodyValue(APIResponse.builder()
+                        .code(httpStatus.value())
+                        .message(technicalMessage.getMessage())
+                        .timestamp(Instant.now().toString())
+                        .identifier(messageId)
+                        .errors(errors)
+                        .build());
     }
 }
