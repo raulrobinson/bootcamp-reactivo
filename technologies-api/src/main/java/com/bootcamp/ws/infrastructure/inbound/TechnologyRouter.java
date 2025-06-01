@@ -1,6 +1,6 @@
 package com.bootcamp.ws.infrastructure.inbound;
 
-import com.bootcamp.ws.infrastructure.inbound.dto.response.ErrorDto;
+import com.bootcamp.ws.infrastructure.common.handler.ErrorDTO;
 import com.bootcamp.ws.infrastructure.inbound.dto.request.AssociateTechnologiesCreateRequestDto;
 import com.bootcamp.ws.infrastructure.inbound.dto.request.ExistsTechnologiesRequestDto;
 import com.bootcamp.ws.infrastructure.inbound.dto.request.TechnologyCreateRequestDto;
@@ -25,13 +25,13 @@ public class TechnologyRouter {
     @Bean
     @RouterOperations({
             @RouterOperation(
-                    path = "/api/v1/technologies/exists",
+                    path = "/api/v1/technologies/find-technologies",
                     produces = "application/json",
                     method = RequestMethod.POST,
                     beanClass = TechnologyHandler.class,
-                    beanMethod = "existsTechnologies",
+                    beanMethod = "findTechnologiesByIdIn",
                     operation = @io.swagger.v3.oas.annotations.Operation(
-                            operationId = "existsTechnologies",
+                            operationId = "findTechnologiesByIdIn",
                             summary = "Find technologies by IDs",
                             description = "Fetches technologies by their IDs from the database",
                             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -58,7 +58,7 @@ public class TechnologyRouter {
                                             content = @io.swagger.v3.oas.annotations.media.Content(
                                                     mediaType = "application/json",
                                                     array = @io.swagger.v3.oas.annotations.media.ArraySchema(
-                                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDto.class)
+                                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDTO.class)
                                                     )
                                             )
                                     ),
@@ -67,7 +67,7 @@ public class TechnologyRouter {
                                             content = @io.swagger.v3.oas.annotations.media.Content(
                                                     mediaType = "application/json",
                                                     array = @io.swagger.v3.oas.annotations.media.ArraySchema(
-                                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDto.class)
+                                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDTO.class)
                                                     )
                                             )
                                     ),
@@ -76,7 +76,7 @@ public class TechnologyRouter {
                                             content = @io.swagger.v3.oas.annotations.media.Content(
                                                     mediaType = "application/json",
                                                     array = @io.swagger.v3.oas.annotations.media.ArraySchema(
-                                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDto.class)
+                                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDTO.class)
                                                     )
                                             )
                                     )
@@ -116,7 +116,7 @@ public class TechnologyRouter {
                                             content = @io.swagger.v3.oas.annotations.media.Content(
                                                     mediaType = "application/json",
                                                     array = @io.swagger.v3.oas.annotations.media.ArraySchema(
-                                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDto.class)
+                                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDTO.class)
                                                     )
                                             )
                                     ),
@@ -126,7 +126,7 @@ public class TechnologyRouter {
                                             content = @io.swagger.v3.oas.annotations.media.Content(
                                                     mediaType = "application/json",
                                                     array = @io.swagger.v3.oas.annotations.media.ArraySchema(
-                                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDto.class)
+                                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDTO.class)
                                                     )
                                             )
                                     ),
@@ -136,7 +136,7 @@ public class TechnologyRouter {
                                             content = @io.swagger.v3.oas.annotations.media.Content(
                                                     mediaType = "application/json",
                                                     array = @io.swagger.v3.oas.annotations.media.ArraySchema(
-                                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDto.class)
+                                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDTO.class)
                                                     )
                                             )
                                     )
@@ -175,7 +175,7 @@ public class TechnologyRouter {
                                             content = @io.swagger.v3.oas.annotations.media.Content(
                                                     mediaType = "application/json",
                                                     array = @io.swagger.v3.oas.annotations.media.ArraySchema(
-                                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDto.class)
+                                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDTO.class)
                                                     )
                                             )
                                     ),
@@ -184,7 +184,7 @@ public class TechnologyRouter {
                                             content = @io.swagger.v3.oas.annotations.media.Content(
                                                     mediaType = "application/json",
                                                     array = @io.swagger.v3.oas.annotations.media.ArraySchema(
-                                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDto.class)
+                                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDTO.class)
                                                     )
                                             )
                                     )
@@ -220,7 +220,7 @@ public class TechnologyRouter {
                                             content = @io.swagger.v3.oas.annotations.media.Content(
                                                     mediaType = "application/json",
                                                     array = @io.swagger.v3.oas.annotations.media.ArraySchema(
-                                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDto.class)
+                                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDTO.class)
                                                     )
                                             )
                                     ),
@@ -229,7 +229,7 @@ public class TechnologyRouter {
                                             content = @io.swagger.v3.oas.annotations.media.Content(
                                                     mediaType = "application/json",
                                                     array = @io.swagger.v3.oas.annotations.media.ArraySchema(
-                                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDto.class)
+                                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDTO.class)
                                                     )
                                             )
                                     ),
@@ -238,7 +238,7 @@ public class TechnologyRouter {
                                             content = @io.swagger.v3.oas.annotations.media.Content(
                                                     mediaType = "application/json",
                                                     array = @io.swagger.v3.oas.annotations.media.ArraySchema(
-                                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDto.class)
+                                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDTO.class)
                                                     )
                                             )
                                     )
@@ -249,7 +249,7 @@ public class TechnologyRouter {
     public RouterFunction<ServerResponse> route(TechnologyHandler handler) {
         return RouterFunctions.route()
                 .POST("/api/v1/technologies", handler::createTechnology)
-                .POST("/api/v1/technologies/exists", handler::existsTechnologies)
+                .POST("/api/v1/technologies/find-technologies", handler::findTechnologiesByIdIn)
                 .POST("/api/v1/technologies/associate-technologies", handler::associateTechnologies)
                 .GET("/api/v1/technologies/find-associates-technologies-by-cap-id/{capabilityId}", handler::findAssociatesTechsByCapId)
                 .build();

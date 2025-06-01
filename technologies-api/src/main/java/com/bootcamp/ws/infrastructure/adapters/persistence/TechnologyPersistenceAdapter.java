@@ -1,5 +1,6 @@
 package com.bootcamp.ws.infrastructure.adapters.persistence;
 
+import com.bootcamp.ws.domain.exception.TechnicalMessage;
 import com.bootcamp.ws.domain.model.TechnologyCapability;
 import com.bootcamp.ws.infrastructure.common.exception.DatabaseResourceException;
 import com.bootcamp.ws.infrastructure.common.exception.ProcessorException;
@@ -9,14 +10,13 @@ import com.bootcamp.ws.infrastructure.adapters.persistence.mapper.TechnologyEnti
 import com.bootcamp.ws.domain.model.Technology;
 import com.bootcamp.ws.infrastructure.adapters.persistence.repository.TechnologyCapabilityRepository;
 import com.bootcamp.ws.infrastructure.adapters.persistence.repository.TechnologyRepository;
-import com.bootcamp.ws.infrastructure.common.enums.TechnicalMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Service
@@ -25,11 +25,10 @@ public class TechnologyPersistenceAdapter implements TechnologyAdapterPort {
 
     private final TechnologyRepository technologyRepository;
     private final TechnologyCapabilityRepository technologyCapabilityRepository;
-
     private final TechnologyEntityMapper mapper;
 
     @Override
-    public CompletableFuture<Boolean> existsByName(String name) {
+    public Mono<Boolean> existsByName(String name) {
         return technologyRepository.existsByName(name)
                 .switchIfEmpty(Mono.error(new TechnicalException(TechnicalMessage.NOT_FOUND)))
                 .onErrorMap(e -> {
@@ -37,12 +36,11 @@ public class TechnologyPersistenceAdapter implements TechnologyAdapterPort {
                         return e;
                     }
                     return new DatabaseResourceException("Error accessing database", e);
-                })
-                .toFuture();
+                });
     }
 
     @Override
-    public CompletableFuture<Technology> createTechnology(Technology requestDto) {
+    public Mono<Technology> createTechnology(Technology requestDto) {
         return technologyRepository.save(mapper.toEntityFromDomain(requestDto))
                 .map(mapper::toDomainFromEntity)
                 .switchIfEmpty(Mono.error(new ProcessorException(TechnicalMessage.BAD_REQUEST)))
@@ -51,101 +49,60 @@ public class TechnologyPersistenceAdapter implements TechnologyAdapterPort {
                         return e;
                     }
                     return new DatabaseResourceException("Error accessing database", e);
-                })
-                .toFuture();
+                });
     }
 
     @Override
-    public CompletableFuture<List<Technology>> existsTechnologies(List<Long> technologiesIds) {
+    public Flux<Technology> findTechnologiesByIdIn(List<Long> technologiesIds) {
         return technologyRepository.findAllById(technologiesIds)
                 .map(mapper::toDomainFromEntity)
-                .collectList()
-                .flatMap(list -> {
-                    if (list == null || list.isEmpty()) {
+                .flatMap(tech -> {
+                    if (tech == null) {
                         return Mono.error(new ProcessorException(TechnicalMessage.BAD_REQUEST));
                     }
-                    return Mono.just(list);
-                })
-                .onErrorMap(e -> {
-                    if (e instanceof TechnicalException || e instanceof DatabaseResourceException) {
-                        return e;
-                    }
-                    return new DatabaseResourceException("Error accessing database", e);
-                })
-                .toFuture();
+                    return Mono.just(tech);
+                });
     }
 
     @Override
-    public CompletableFuture<List<Technology>> findTechnologiesByIds(List<Long> technologiesIds) {
+    public Flux<Technology> findTechnologiesByIds(List<Long> technologiesIds) {
         return technologyRepository.findAllById(technologiesIds)
                 .map(mapper::toDomainFromEntity)
-                .collectList()
-                .flatMap(list -> {
-                    if (list.isEmpty()) {
+                .flatMap(tech -> {
+                    if (tech == null) {
                         return Mono.error(new ProcessorException(TechnicalMessage.BAD_REQUEST));
                     }
-                    return Mono.just(list);
-                })
-                .onErrorMap(e -> {
-                    if (e instanceof TechnicalException || e instanceof DatabaseResourceException) {
-                        return e;
-                    }
-                    return new DatabaseResourceException("Error accessing database", e);
-                })
-                .toFuture();
+                    return Mono.just(tech);
+                });
     }
 
     @Override
-    public CompletableFuture<List<TechnologyCapability>> associateTechnologies(Long capabilityId, List<Long> technologiesIds) {
+    public Flux<TechnologyCapability> associateTechnologies(Long capabilityId, List<Long> technologiesIds) {
         List<TechnologyCapability> domains = technologiesIds.stream()
-                .map(techId -> new TechnologyCapability.Builder()
+                .map(techId -> TechnologyCapability.builder()
                         .technologyId(techId)
                         .capabilityId(capabilityId)
                         .build())
                 .toList();
 
         return technologyCapabilityRepository
-                .saveAll(mapper.toTechnologyCapabilityEntitiesFromDomains(domains)) // Flux<Entity>
-                .collectList()                                                      // Mono<List<Entity>>
-                .map(mapper::toTechnologyCapabilityDomainsFromEntities)             // Mono<List<Domain>>
-                .onErrorMap(e -> {
-                    if (e instanceof TechnicalException || e instanceof DatabaseResourceException) {
-                        return e;
-                    }
-                    return new DatabaseResourceException("Error accessing database", e);
-                })
-                .toFuture();                                                        // CompletableFuture<List<Domain>>
+                .saveAll(mapper.toTechnologyCapabilityEntitiesFromDomains(domains))
+                .flatMap(entity -> Mono.just(TechnologyCapability.builder()
+                        .technologyId(entity.getTechnologyId())
+                        .capabilityId(entity.getCapabilityId())
+                        .build()));
     }
 
     @Override
-    public CompletableFuture<List<TechnologyCapability>> findAllByCapabilityId(Long capabilityId) {
+    public Flux<TechnologyCapability> findAllByCapabilityId(Long capabilityId) {
         return mapper.toMonoTechnologyCapabilityListFromFluxEntities(
                         technologyCapabilityRepository.findAllByCapabilityId(capabilityId))
-                .flatMap(list -> {
-                    if (list == null || list.isEmpty()) {
-                        return Mono.error(new ProcessorException(TechnicalMessage.BAD_REQUEST));
-                    }
-                    return Mono.just(list);
-                })
-                .onErrorMap(e -> {
-                    if (e instanceof TechnicalException || e instanceof DatabaseResourceException) {
-                        return e;
-                    }
-                    return new DatabaseResourceException("Error accessing database", e);
-                })
-                .toFuture();
+                .flatMapMany(Flux::fromIterable);
     }
 
     @Override
-    public CompletableFuture<Boolean> existsByCapabilityId(Long capabilityId) {
+    public Mono<Boolean> existsByCapabilityId(Long capabilityId) {
         return technologyCapabilityRepository.existsByCapabilityId(capabilityId)
-                .switchIfEmpty(Mono.error(new ProcessorException(TechnicalMessage.NOT_FOUND)))
-                .onErrorMap(e -> {
-                    if (e instanceof TechnicalException || e instanceof DatabaseResourceException) {
-                        return e;
-                    }
-                    return new DatabaseResourceException("Error accessing database", e);
-                })
-                .toFuture();
+                .switchIfEmpty(Mono.error(new ProcessorException(TechnicalMessage.NOT_FOUND)));
     }
 }

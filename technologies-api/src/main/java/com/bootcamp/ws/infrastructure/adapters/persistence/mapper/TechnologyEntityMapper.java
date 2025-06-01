@@ -15,12 +15,10 @@ public class TechnologyEntityMapper {
 
     public Technology toDomainFromEntity(TechnologyEntity entity) {
         if (entity == null) return null;
-        return new Technology.Builder()
+        return Technology.builder()
                 .id(entity.getId())
                 .name(entity.getName())
                 .description(entity.getDescription())
-                .createdAt(String.valueOf(entity.getCreatedAt()))
-                .updatedAt(String.valueOf(entity.getUpdatedAt()))
                 .build();
     }
 
@@ -38,7 +36,7 @@ public class TechnologyEntityMapper {
         if (entities == null) return null;
         return entities.collectList()
                 .map(entityList -> entityList.stream()
-                        .map(entity -> new TechnologyCapability.Builder()
+                        .map(entity -> TechnologyCapability.builder()
                                 .technologyId(entity.getTechnologyId())
                                 .capabilityId(entity.getCapabilityId())
                                 .build())
@@ -49,16 +47,6 @@ public class TechnologyEntityMapper {
         if (entities == null || entities.isEmpty()) return List.of();
         return entities.stream()
                 .map(entity -> TechnologyCapabilityEntity.builder()
-                        .technologyId(entity.getTechnologyId())
-                        .capabilityId(entity.getCapabilityId())
-                        .build())
-                .toList();
-    }
-
-    public List<TechnologyCapability> toTechnologyCapabilityDomainsFromEntities(List<TechnologyCapabilityEntity> entities) {
-        if (entities == null || entities.isEmpty()) return List.of();
-        return entities.stream()
-                .map(entity -> new TechnologyCapability.Builder()
                         .technologyId(entity.getTechnologyId())
                         .capabilityId(entity.getCapabilityId())
                         .build())

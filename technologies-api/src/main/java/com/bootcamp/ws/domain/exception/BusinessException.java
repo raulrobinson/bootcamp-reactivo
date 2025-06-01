@@ -1,26 +1,21 @@
 package com.bootcamp.ws.domain.exception;
 
+import lombok.Getter;
+
+@Getter
 public class BusinessException extends RuntimeException {
     private final String code;
     private final String parameter;
 
-    public BusinessException(String message) {
-        super(message);
+    public BusinessException(TechnicalMessage message, String parameter) {
+        super(message.getMessage());
         this.code = "BUSINESS_ERROR";
-        this.parameter = null;
+        this.parameter = parameter;
     }
 
     public BusinessException(String message, String code, String parameter) {
         super(message);
         this.code = code;
         this.parameter = parameter;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public String getParameter() {
-        return parameter;
     }
 }

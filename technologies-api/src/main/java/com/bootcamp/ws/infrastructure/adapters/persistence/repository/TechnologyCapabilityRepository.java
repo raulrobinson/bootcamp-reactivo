@@ -7,6 +7,5 @@ import reactor.core.publisher.Mono;
 
 public interface TechnologyCapabilityRepository extends ReactiveCrudRepository<TechnologyCapabilityEntity, Void> {
     Flux<TechnologyCapabilityEntity> findAllByCapabilityId(Long capabilityId);
-
     Mono<Boolean> existsByCapabilityId(Long capabilityId);
 }
