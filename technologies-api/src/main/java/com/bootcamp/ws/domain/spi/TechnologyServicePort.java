@@ -14,4 +14,6 @@ public interface TechnologyServicePort {
     Flux<Technology> findTechnologiesByIds(List<Long> technologiesIds);
     Mono<Map<Object, Object>> findAssociatesTechsByCapId(Long capabilityId);
     Flux<TechnologyCapability> associateTechnologies(Long capabilityId, List<Long> technologiesIds);
+
+    Mono<Boolean> deleteAssocTechnologiesByCapabilityId(Long capabilityId);
 }

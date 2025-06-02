@@ -116,4 +116,27 @@ public class TechnologyUseCase implements TechnologyServicePort {
                     return technologyAdapterPort.associateTechnologies(capabilityId, technologiesIds);
                 });
     }
+
+    @Override
+    public Mono<Boolean> deleteAssocTechnologiesByCapabilityId(Long capabilityId) {
+        return technologyAdapterPort.existsByCapabilityId(capabilityId)
+                .flatMap(exist -> {
+                    if (!exist) {
+                        return Mono.error(new BusinessException(
+                                "Capability not found",
+                                "CAPABILITY_NOT_FOUND",
+                                capabilityId.toString()));
+                    }
+                    return technologyAdapterPort.deleteAssocTechnologiesByCapabilityId(capabilityId)
+                            .flatMap(deleted -> {
+                                Mono<Boolean> exists = technologyAdapterPort.existsByCapabilityId(capabilityId);
+                                return exists.flatMap(existsResult -> {
+                                    if (existsResult) {
+                                        return Mono.just(false);
+                                    }
+                                    return Mono.just(true);
+                                });
+                            });
+                });
+    }
 }
