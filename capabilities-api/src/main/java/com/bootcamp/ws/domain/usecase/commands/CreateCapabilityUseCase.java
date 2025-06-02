@@ -1,29 +1,21 @@
 package com.bootcamp.ws.domain.usecase.commands;
 
-import com.bootcamp.ws.domain.api.CapabilityPersistenceAdapterPort;
-import com.bootcamp.ws.domain.api.TechnologyExternalAdapterPort;
-import com.bootcamp.ws.domain.dto.request.CapabilityCreateDto;
-import com.bootcamp.ws.domain.dto.response.CapabilityResponseDto;
-import com.bootcamp.ws.domain.mapper.CapabilityDomainMapper;
-import com.bootcamp.ws.domain.spi.CreateCapabilityServicePort;
-import reactor.core.publisher.Mono;
+public class CreateCapabilityUseCase {
 
-public class CreateCapabilityUseCase implements CreateCapabilityServicePort {
-
-    private final CapabilityPersistenceAdapterPort capabilityPersistenceAdapterPort;
-    private final TechnologyExternalAdapterPort technologyExternalAdapterPort;
-    private final CapabilityDomainMapper mapper;
-
-    public CreateCapabilityUseCase(CapabilityPersistenceAdapterPort capabilityPersistenceAdapterPort, TechnologyExternalAdapterPort technologyExternalAdapterPort, CapabilityDomainMapper mapper) {
-        this.capabilityPersistenceAdapterPort = capabilityPersistenceAdapterPort;
-        this.technologyExternalAdapterPort = technologyExternalAdapterPort;
-        this.mapper = mapper;
-    }
-
-    @Override
-    public Mono<CapabilityResponseDto> createCapability(CapabilityCreateDto request) {
-
-        return null;
+//    private final CapabilityPersistenceAdapterPort capabilityPersistenceAdapterPort;
+//    private final TechnologyExternalAdapterPort technologyExternalAdapterPort;
+//    private final CapabilityDomainMapper mapper;
+//
+//    public CreateCapabilityUseCase(CapabilityPersistenceAdapterPort capabilityPersistenceAdapterPort, TechnologyExternalAdapterPort technologyExternalAdapterPort, CapabilityDomainMapper mapper) {
+//        this.capabilityPersistenceAdapterPort = capabilityPersistenceAdapterPort;
+//        this.technologyExternalAdapterPort = technologyExternalAdapterPort;
+//        this.mapper = mapper;
+//    }
+//
+//    @Override
+//    public Mono<CapabilityResponseDto> createCapability(CapabilityCreateDto request) {
+//
+//        return null;
 
 //        ExistsTechnologiesDto technologiesIds = ExistsTechnologiesDto.builder()
 //                .technologiesIds(request.getTechnologyIds())
@@ -62,5 +54,5 @@ public class CreateCapabilityUseCase implements CreateCapabilityServicePort {
 //
 //        return mapper.toDtoFromDomain(capabilityPersistenceAdapterPort.createCapability(request))
 //                .switchIfEmpty(Mono.error(new BusinessException(TechnicalMessage.BAD_REQUEST)));
-    }
+//    }
 }

@@ -1,0 +1,73 @@
+services:
+
+  # [TECHNOLOGY] MySQL Database
+  mysql-technology:
+    image: mysql:latest
+    container_name: mysql-technology-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: technology
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3326:3306"
+    volumes:
+      - mysql_technology:/var/lib/mysql
+
+  # [CAPABILITY] MySQL Database
+  mysql-capability:
+    image: mysql:latest
+    container_name: mysql-capability-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: capability
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3336:3306"
+    volumes:
+      - mysql_capability:/var/lib/mysql
+
+  # [BOOTCAMP] MySQL Database
+  mysql-bootcamp:
+    image: mysql:latest
+    container_name: mysql-bootcamp-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: bootcamp
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3346:3306"
+    volumes:
+      - mysql_bootcamp:/var/lib/mysql
+
+  # [PERSON] MySQL Database
+  mysql-person:
+    image: mysql:latest
+    container_name: mysql-person-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: person
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3356:3306"
+    volumes:
+      - mysql_person:/var/lib/mysql
+
+  # [REPORTS] MongoDB Database
+  mongodb-reports:
+    image: mongo:latest
+    container_name: mongodb-reports-db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_reports:/data/db
+
+volumes:
+  mysql_technology:
+  mysql_capability:
+  mysql_bootcamp:
+  mysql_person:
+  mongodb_reports:

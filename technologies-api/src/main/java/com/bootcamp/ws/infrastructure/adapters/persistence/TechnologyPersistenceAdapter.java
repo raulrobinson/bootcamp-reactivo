@@ -1,18 +1,15 @@
 package com.bootcamp.ws.infrastructure.adapters.persistence;
 
-import com.bootcamp.ws.domain.common.exceptions.NoContentException;
-import com.bootcamp.ws.domain.common.exceptions.ProcessorException;
-import com.bootcamp.ws.domain.dto.request.AssociateTechnologiesCreateRequestDto;
-import com.bootcamp.ws.domain.dto.request.ExistsTechnologiesRequestDto;
 import com.bootcamp.ws.domain.api.TechnologyAdapterPort;
-import com.bootcamp.ws.domain.dto.request.TechnologyCreateRequestDto;
-import com.bootcamp.ws.domain.model.TechnologyCapability;
-import com.bootcamp.ws.infrastructure.adapters.persistence.entity.TechnologyCapabilityEntity;
-import com.bootcamp.ws.infrastructure.adapters.persistence.mapper.TechnologyEntityMapper;
+import com.bootcamp.ws.domain.exception.TechnicalMessage;
 import com.bootcamp.ws.domain.model.Technology;
+import com.bootcamp.ws.domain.model.TechnologyCapability;
+import com.bootcamp.ws.infrastructure.adapters.persistence.mapper.TechnologyEntityMapper;
 import com.bootcamp.ws.infrastructure.adapters.persistence.repository.TechnologyCapabilityRepository;
 import com.bootcamp.ws.infrastructure.adapters.persistence.repository.TechnologyRepository;
-import com.bootcamp.ws.domain.common.enums.TechnicalMessage;
+import com.bootcamp.ws.infrastructure.common.exception.DatabaseResourceException;
+import com.bootcamp.ws.infrastructure.common.exception.ProcessorException;
+import com.bootcamp.ws.infrastructure.common.exception.TechnicalException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,69 +25,110 @@ public class TechnologyPersistenceAdapter implements TechnologyAdapterPort {
 
     private final TechnologyRepository technologyRepository;
     private final TechnologyCapabilityRepository technologyCapabilityRepository;
-
     private final TechnologyEntityMapper mapper;
 
     @Override
     public Mono<Boolean> existsByName(String name) {
         return technologyRepository.existsByName(name)
-                .switchIfEmpty(Mono.error(new NoContentException(TechnicalMessage.NO_CONTENT)))
-                .flatMap(exists -> {
-                    if (exists) return Mono.just(true);
-                    return Mono.just(false);
-                })
-                .switchIfEmpty(Mono.error(new ProcessorException("Error checking technology existence", TechnicalMessage.BAD_REQUEST)));
+                .switchIfEmpty(Mono.error(new TechnicalException(TechnicalMessage.NOT_FOUND)))
+                .onErrorMap(e -> {
+                    if (e instanceof TechnicalException || e instanceof DatabaseResourceException) {
+                        return e;
+                    }
+                    return new DatabaseResourceException("Error accessing database", e);
+                });
     }
 
     @Override
-    public Mono<Technology> createTechnology(TechnologyCreateRequestDto requestDto) {
-        return technologyRepository.existsByName(requestDto.getName())
-                .flatMap(exists -> technologyRepository.save(mapper.toEntityFromDto(requestDto))
-                        .flatMap(savedTechnology -> Mono.just(mapper.toDomainFromEntity(savedTechnology)))
-                        .switchIfEmpty(Mono.error(new ProcessorException("Error saving technology", TechnicalMessage.BAD_REQUEST))));
+    public Mono<Technology> createTechnology(Technology requestDto) {
+        return technologyRepository.save(mapper.toEntityFromDomain(requestDto))
+                .map(mapper::toDomainFromEntity)
+                .switchIfEmpty(Mono.error(new ProcessorException(TechnicalMessage.BAD_REQUEST)))
+                .onErrorMap(e -> {
+                    if (e instanceof TechnicalException || e instanceof DatabaseResourceException) {
+                        return e;
+                    }
+                    return new DatabaseResourceException("Error accessing database", e);
+                });
     }
 
     @Override
-    public Flux<Technology> existsTechnologies(ExistsTechnologiesRequestDto dto) {
-        return technologyRepository.findAllById(dto.getTechnologiesIds())
-                .flatMap(technologyEntity -> Mono.just(mapper.toDomainFromEntity(technologyEntity)))
-                .switchIfEmpty(Mono.error(new ProcessorException("Error fetching technologies", TechnicalMessage.BAD_REQUEST)));
-    }
-
-    @Override
-    public Mono<List<TechnologyCapability>> associateTechnologies(AssociateTechnologiesCreateRequestDto dto) {
-        List<TechnologyCapabilityEntity> entities = dto.getTechnologiesIds().stream()
-                .map(techId -> TechnologyCapabilityEntity.builder()
-                        .technologyId(techId)
-                        .capabilityId(dto.getCapabilityId())
-                        .build())
-                .toList();
-        return mapper.toDomainsFromEntities(technologyCapabilityRepository.saveAll(entities).collectList())
-                .switchIfEmpty(Mono.error(new ProcessorException("Error saving technologies-capabilities", TechnicalMessage.BAD_REQUEST)));
-    }
-
-    @Override
-    public Mono<List<TechnologyCapability>> findAllByCapabilityId(Long capabilityId) {
-        return mapper.toMonoTechnologyCapabilityListFromFluxEntities(technologyCapabilityRepository.findAllByCapabilityId(capabilityId))
-                .switchIfEmpty(Mono.error(new ProcessorException("Error fetching technologies-capabilities", TechnicalMessage.BAD_REQUEST)));
-
+    public Flux<Technology> findTechnologiesByIdIn(List<Long> technologiesIds) {
+        return technologyRepository.findAllById(technologiesIds)
+                .map(mapper::toDomainFromEntity)
+                .flatMap(tech -> {
+                    if (tech == null) {
+                        return Mono.error(new ProcessorException(TechnicalMessage.BAD_REQUEST));
+                    }
+                    return Mono.just(tech);
+                });
     }
 
     @Override
     public Flux<Technology> findTechnologiesByIds(List<Long> technologiesIds) {
         return technologyRepository.findAllById(technologiesIds)
-                .switchIfEmpty(Mono.error(new NoContentException(TechnicalMessage.NO_CONTENT)))
-                .flatMap(technologyEntity -> Mono.just(mapper.toDomainFromEntity(technologyEntity)))
-                .switchIfEmpty(Mono.error(new ProcessorException("Error fetching technologies", TechnicalMessage.BAD_REQUEST)));
+                .map(mapper::toDomainFromEntity)
+                .flatMap(tech -> {
+                    if (tech == null) {
+                        return Mono.error(new ProcessorException(TechnicalMessage.BAD_REQUEST));
+                    }
+                    return Mono.just(tech);
+                });
+    }
+
+    @Override
+    public Flux<TechnologyCapability> associateTechnologies(Long capabilityId, List<Long> technologiesIds) {
+        List<TechnologyCapability> domains = technologiesIds.stream()
+                .map(techId -> TechnologyCapability.builder()
+                        .technologyId(techId)
+                        .capabilityId(capabilityId)
+                        .build())
+                .toList();
+
+        return technologyCapabilityRepository
+                .saveAll(mapper.toTechnologyCapabilityEntitiesFromDomains(domains))
+                .flatMap(entity -> Mono.just(TechnologyCapability.builder()
+                        .technologyId(entity.getTechnologyId())
+                        .capabilityId(entity.getCapabilityId())
+                        .build()));
+    }
+
+    @Override
+    public Flux<TechnologyCapability> findAllByCapabilityId(Long capabilityId) {
+        return mapper.toMonoTechnologyCapabilityListFromFluxEntities(
+                        technologyCapabilityRepository.findAllByCapabilityId(capabilityId))
+                .flatMapMany(Flux::fromIterable);
     }
 
     @Override
     public Mono<Boolean> existsByCapabilityId(Long capabilityId) {
         return technologyCapabilityRepository.existsByCapabilityId(capabilityId)
-                .flatMap(exists -> {
-                    if (exists) return Mono.just(true);
-                    return Mono.just(false);
-                })
-                .switchIfEmpty(Mono.error(new ProcessorException("Error checking technologies-capabilities existence", TechnicalMessage.BAD_REQUEST)));
+                .switchIfEmpty(Mono.error(new ProcessorException(TechnicalMessage.NOT_FOUND)));
+    }
+
+    @Override
+    public Mono<TechnologyCapability> findCapabilityById(Long capabilityId) {
+        return technologyCapabilityRepository.findTechnologyCapabilityEntityByCapabilityId(capabilityId)
+                .map(mapper::toTechnologyCapabilityDomainFromEntity)
+                .switchIfEmpty(Mono.error(new ProcessorException(TechnicalMessage.NOT_FOUND)))
+                .onErrorMap(e -> {
+                    if (e instanceof TechnicalException || e instanceof DatabaseResourceException) {
+                        return e;
+                    }
+                    return new DatabaseResourceException("Error accessing database", e);
+                });
+    }
+
+    @Override
+    public Mono<Boolean> deleteAssocTechnologiesByCapabilityId(Long capabilityId) {
+        return technologyCapabilityRepository.deleteTechnologyCapabilityEntityByCapabilityId(capabilityId)
+                .thenReturn(true)
+                .switchIfEmpty(Mono.error(new ProcessorException(TechnicalMessage.NOT_FOUND)))
+                .onErrorMap(e -> {
+                    if (e instanceof TechnicalException || e instanceof DatabaseResourceException) {
+                        return e;
+                    }
+                    return new DatabaseResourceException("Error accessing database", e);
+                });
     }
 }

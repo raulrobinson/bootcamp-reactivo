@@ -1,13 +1,12 @@
 package com.bootcamp.ws.infrastructure.adapters.outbound;
 
 import com.bootcamp.ws.domain.api.TechnologyExternalAdapterPort;
-import com.bootcamp.ws.domain.common.enums.TechnicalMessage;
-import com.bootcamp.ws.domain.common.exceptions.ProcessorException;
-import com.bootcamp.ws.infrastructure.adapters.outbound.dto.ExistsTechnologiesDto;
-import com.bootcamp.ws.infrastructure.adapters.outbound.dto.TechnologyDto;
-import com.bootcamp.ws.infrastructure.adapters.outbound.dto.response.FindAssociatesTechsByCapIdResponseDto;
-import com.bootcamp.ws.infrastructure.adapters.outbound.model.TechnologyAssociateTechnologies;
-import com.bootcamp.ws.infrastructure.adapters.outbound.model.TechnologyCapability;
+import com.bootcamp.ws.domain.exception.enums.TechnicalMessage;
+import com.bootcamp.ws.infrastructure.common.exception.ProcessorException;
+import com.bootcamp.ws.infrastructure.inbound.dto.ExistsTechnologiesDto;
+import com.bootcamp.ws.domain.model.Technology;
+import com.bootcamp.ws.domain.model.TechnologyAssociateTechnologies;
+import com.bootcamp.ws.domain.model.TechnologyCapability;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -25,14 +24,14 @@ public class TechnologyExternalAdapterPortAdapter implements TechnologyExternalA
     @Value("${technologies.service.url}") String serviceUrl;
 
     @Override
-    public Mono<List<TechnologyDto>> existsTechnologies(ExistsTechnologiesDto dto) {
+    public Mono<List<Technology>> findTechnologiesByIdIn(ExistsTechnologiesDto dto) {
         return client.post()
-                .uri(serviceUrl + "/exists")
+                .uri(serviceUrl + "/find-technologies")
                 .bodyValue(dto)
                 .retrieve()
-                .bodyToFlux(TechnologyDto.class)
+                .bodyToFlux(Technology.class)
                 .collectList()
-                .onErrorResume(throwable -> Mono.error(new ProcessorException(throwable, TechnicalMessage.INTERNAL_ERROR_IN_ADAPTERS)));
+                .onErrorResume(throwable -> Mono.error(new ProcessorException(TechnicalMessage.INTERNAL_ERROR_IN_ADAPTERS, throwable)));
     }
 
     @Override
@@ -43,16 +42,24 @@ public class TechnologyExternalAdapterPortAdapter implements TechnologyExternalA
                 .retrieve()
                 .bodyToFlux(TechnologyCapability.class)
                 .collectList()
-                .onErrorResume(throwable -> Mono.error(new ProcessorException(throwable, TechnicalMessage.INTERNAL_ERROR_IN_ADAPTERS)));
+                .onErrorResume(throwable -> Mono.error(new ProcessorException(TechnicalMessage.INTERNAL_ERROR_IN_ADAPTERS, throwable)));
     }
 
     @Override
-    public Mono<List<FindAssociatesTechsByCapIdResponseDto>> findAssociatesTechsByCapId(Long capabilityId) {
+    public Mono<Response> findAssociatesTechsByCapId(Long capabilityId) {
         return client.get()
                 .uri(serviceUrl + "/find-associates-technologies-by-cap-id/{capabilityId}", capabilityId)
                 .retrieve()
-                .bodyToFlux(FindAssociatesTechsByCapIdResponseDto.class)
-                .collectList()
-                .onErrorResume(throwable -> Mono.error(new ProcessorException(throwable, TechnicalMessage.INTERNAL_ERROR_IN_ADAPTERS)));
+                .bodyToMono(Response.class)
+                .onErrorResume(throwable -> Mono.error(new ProcessorException(TechnicalMessage.INTERNAL_ERROR_IN_ADAPTERS, throwable)));
+    }
+
+    @Override
+    public Mono<Boolean> deleteAssocTechnologiesByCapabilityId(Long capabilityId) {
+        return client.delete()
+                .uri(serviceUrl + "/delete-assoc/{capabilityId}", capabilityId)
+                .retrieve()
+                .bodyToMono(Boolean.class)
+                .onErrorResume(throwable -> Mono.error(new ProcessorException(TechnicalMessage.INTERNAL_ERROR_IN_ADAPTERS, throwable)));
     }
 }
