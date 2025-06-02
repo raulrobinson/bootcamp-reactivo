@@ -5,12 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class CapabilityBootcamp {
-    private Long capabilityId;
-    private Long bootcampId;
-}
+import java.util.List;
 
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class TechnologyAssociateTechnologies {
+    private Long capabilityId;
+    private List<Long> technologiesIds;
+}
