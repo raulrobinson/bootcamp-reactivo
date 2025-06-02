@@ -105,4 +105,30 @@ public class TechnologyPersistenceAdapter implements TechnologyAdapterPort {
         return technologyCapabilityRepository.existsByCapabilityId(capabilityId)
                 .switchIfEmpty(Mono.error(new ProcessorException(TechnicalMessage.NOT_FOUND)));
     }
+
+    @Override
+    public Mono<TechnologyCapability> findCapabilityById(Long capabilityId) {
+        return technologyCapabilityRepository.findTechnologyCapabilityEntityByCapabilityId(capabilityId)
+                .map(mapper::toTechnologyCapabilityDomainFromEntity)
+                .switchIfEmpty(Mono.error(new ProcessorException(TechnicalMessage.NOT_FOUND)))
+                .onErrorMap(e -> {
+                    if (e instanceof TechnicalException || e instanceof DatabaseResourceException) {
+                        return e;
+                    }
+                    return new DatabaseResourceException("Error accessing database", e);
+                });
+    }
+
+    @Override
+    public Mono<Boolean> deleteAssocTechnologiesByCapabilityId(Long capabilityId) {
+        return technologyCapabilityRepository.deleteTechnologyCapabilityEntityByCapabilityId(capabilityId)
+                .thenReturn(true)
+                .switchIfEmpty(Mono.error(new ProcessorException(TechnicalMessage.NOT_FOUND)))
+                .onErrorMap(e -> {
+                    if (e instanceof TechnicalException || e instanceof DatabaseResourceException) {
+                        return e;
+                    }
+                    return new DatabaseResourceException("Error accessing database", e);
+                });
+    }
 }

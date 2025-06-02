@@ -245,6 +245,45 @@ public class TechnologyRouter {
                             }
                     )
             ),
+            @RouterOperation(
+                    path = "/api/v1/technologies/delete-assoc/{capabilityId}",
+                    produces = "application/json",
+                    method = RequestMethod.DELETE,
+                    beanClass = TechnologyHandler.class,
+                    beanMethod = "deleteAssocTechnologiesByCapabilityId",
+                    operation = @io.swagger.v3.oas.annotations.Operation(
+                            operationId = "deleteAssocTechnologiesByCapabilityId",
+                            summary = "Delete technologies-capability by capability ID",
+                            description = "Deletes technologies associated with a capability ID from the database",
+                            parameters = {
+                                    @Parameter(name = "capabilityId", in = ParameterIn.PATH, description = "Capability ID", example = "1"),
+                            },
+                            responses = {
+                                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                                            responseCode = "202",
+                                            description = "Accepted"
+                                    ),
+                                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                                            responseCode = "404", description = "Not Found",
+                                            content = @io.swagger.v3.oas.annotations.media.Content(
+                                                    mediaType = "application/json",
+                                                    array = @io.swagger.v3.oas.annotations.media.ArraySchema(
+                                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDTO.class)
+                                                    )
+                                            )
+                                    ),
+                                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                                            responseCode = "500", description = "Internal Server Error",
+                                            content = @io.swagger.v3.oas.annotations.media.Content(
+                                                    mediaType = "application/json",
+                                                    array = @io.swagger.v3.oas.annotations.media.ArraySchema(
+                                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDTO.class)
+                                                    )
+                                            )
+                                    )
+                            }
+                    )
+            )
     })
     public RouterFunction<ServerResponse> route(TechnologyHandler handler) {
         return RouterFunctions.route()
@@ -252,6 +291,7 @@ public class TechnologyRouter {
                 .POST("/api/v1/technologies/find-technologies", handler::findTechnologiesByIdIn)
                 .POST("/api/v1/technologies/associate-technologies", handler::associateTechnologies)
                 .GET("/api/v1/technologies/find-associates-technologies-by-cap-id/{capabilityId}", handler::findAssociatesTechsByCapId)
+                .DELETE("/api/v1/technologies/delete-assoc/{capabilityId}", handler::deleteAssocTechnologiesByCapabilityId)
                 .build();
     }
 }

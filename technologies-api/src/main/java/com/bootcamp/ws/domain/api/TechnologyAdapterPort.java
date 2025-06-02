@@ -15,4 +15,8 @@ public interface TechnologyAdapterPort {
     Flux<TechnologyCapability> associateTechnologies(Long capabilityId, List<Long> technologiesIds);
     Flux<TechnologyCapability> findAllByCapabilityId(Long capabilityId);
     Mono<Boolean> existsByCapabilityId(Long capabilityId);
+
+    Mono<TechnologyCapability> findCapabilityById(Long capabilityId);
+
+    Mono<Boolean> deleteAssocTechnologiesByCapabilityId(Long capabilityId);
 }
