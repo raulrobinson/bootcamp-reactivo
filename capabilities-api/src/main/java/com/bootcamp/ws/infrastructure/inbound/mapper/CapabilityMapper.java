@@ -12,7 +12,6 @@ public class CapabilityMapper {
         return domain.map(capability -> CapabilityFullList.builder()
                 .id(capability.getId())
                 .name(capability.getName())
-                //.technologies(capability.getTechnologies())
                 .build());
     }
 }

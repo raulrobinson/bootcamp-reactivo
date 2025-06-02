@@ -1,10 +1,9 @@
 package com.bootcamp.ws.infrastructure.inbound.handler;
 
 import com.bootcamp.ws.infrastructure.common.handler.GlobalErrorHandler;
-import com.bootcamp.ws.infrastructure.inbound.dto.request.CapabilityCreateDto;
+import com.bootcamp.ws.infrastructure.inbound.dto.CapabilityCreateDto;
 import com.bootcamp.ws.domain.spi.CapabilityServicePort;
 import com.bootcamp.ws.infrastructure.adapters.persistence.mapper.CapabilityEntityMapper;
-import com.bootcamp.ws.domain.api.CapabilityPersistenceAdapterPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
@@ -26,8 +25,6 @@ import static com.bootcamp.ws.infrastructure.common.util.Constants.*;
 public class CapabilityHandler {
 
     private final CapabilityServicePort capabilityServicePort;
-
-    private final CapabilityPersistenceAdapterPort service;
     private final CapabilityEntityMapper mapper;
     private final GlobalErrorHandler globalErrorHandler;
 

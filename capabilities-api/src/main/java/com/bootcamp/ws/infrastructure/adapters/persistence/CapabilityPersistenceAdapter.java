@@ -1,6 +1,7 @@
 package com.bootcamp.ws.infrastructure.adapters.persistence;
 
 import com.bootcamp.ws.domain.api.CapabilityPersistenceAdapterPort;
+import com.bootcamp.ws.domain.dto.ExistsTechnologies;
 import com.bootcamp.ws.domain.exception.enums.TechnicalMessage;
 import com.bootcamp.ws.domain.model.TechnologyAssociateTechnologies;
 import com.bootcamp.ws.infrastructure.adapters.persistence.mapper.CapabilityEntityMapper;
@@ -9,7 +10,6 @@ import com.bootcamp.ws.infrastructure.adapters.persistence.repository.Capability
 import com.bootcamp.ws.infrastructure.adapters.persistence.repository.CapabilityRepository;
 import com.bootcamp.ws.domain.api.TechnologyExternalAdapterPort;
 import com.bootcamp.ws.infrastructure.common.exception.ProcessorException;
-import com.bootcamp.ws.infrastructure.inbound.dto.ExistsTechnologiesDto;
 import com.bootcamp.ws.domain.model.Technology;
 import com.bootcamp.ws.domain.model.CapabilityFullList;
 import lombok.RequiredArgsConstructor;
@@ -44,14 +44,12 @@ public class CapabilityPersistenceAdapter implements CapabilityPersistenceAdapte
 
     @Override
     public Mono<Capability> createCapability(Capability request) {
-
         // Paso 1: Buscar las tecnologías por ID
-        return technologyExternalAdapterPort.findTechnologiesByIdIn(ExistsTechnologiesDto.builder()
+        return technologyExternalAdapterPort.findTechnologiesByIdIn(ExistsTechnologies.builder()
                         .technologiesIds(request.getTechnologyIds())
                         .build())
                 .switchIfEmpty(Mono.error(new ProcessorException(TechnicalMessage.INVALID_REQUEST)))
                 .flatMap(validas -> {
-
                     // Paso 2: Guardar la capacidad con la entidad de dominio
                     return capabilityRepository.save(mapper.toCapabilityEntityFromDomain(Capability.builder()
                                     .name(request.getName())
@@ -59,7 +57,6 @@ public class CapabilityPersistenceAdapter implements CapabilityPersistenceAdapte
                                     .technologyIds(request.getTechnologyIds())
                                     .build()))
                             .flatMap(savedCap -> {
-
                                 // Paso 3: Asociar tecnologías con la capacidad
                                 return technologyExternalAdapterPort.associateTechnologies(TechnologyAssociateTechnologies.builder()
                                                 .capabilityId(savedCap.getId())
@@ -74,7 +71,6 @@ public class CapabilityPersistenceAdapter implements CapabilityPersistenceAdapte
 
     @Override
     public Mono<CapabilityFullList> findCapabilityById(Long id) {
-
         // 1. Buscar la capacidad por ID
         return capabilityRepository.findById(id)
                 .flatMap(cap -> {
@@ -84,7 +80,6 @@ public class CapabilityPersistenceAdapter implements CapabilityPersistenceAdapte
                     return technologyExternalAdapterPort.findAssociatesTechsByCapId(id)
                             .flatMap(response -> {
                                 if (response == null) return Mono.error(new ProcessorException(TechnicalMessage.NOT_FOUND));
-
                                 // 3. Mapear la respuesta a CapabilityFullList
                                 return Mono.just(CapabilityFullList.builder()
                                         .id(cap.getId())
@@ -107,14 +102,12 @@ public class CapabilityPersistenceAdapter implements CapabilityPersistenceAdapte
         return capabilityRepository.findById(capabilityId)
                 .flatMap(cap -> {
                     if (cap == null) return Mono.error(new ProcessorException(TechnicalMessage.NOT_FOUND));
-
                     // 2. Eliminar las tecnologías asociadas a la capacidad
                     return technologyExternalAdapterPort.deleteAssocTechnologiesByCapabilityId(capabilityId)
                             .thenReturn(true);
                 })
                 .flatMap(deleted -> {
                     if (!deleted) return Mono.error(new ProcessorException(TechnicalMessage.NOT_FOUND));
-
                     // 3. Eliminar la capacidad
                     return capabilityRepository.deleteById(capabilityId)
                             .thenReturn(true);
