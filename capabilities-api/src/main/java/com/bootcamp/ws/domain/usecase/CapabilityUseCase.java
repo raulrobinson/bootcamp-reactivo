@@ -62,4 +62,20 @@ public class CapabilityUseCase implements CapabilityServicePort {
                     return Mono.just(capability);
                 });
     }
+
+    @Override
+    public Mono<Boolean> deleteCapability(Long capabilityId) {
+        return capabilityPersistenceAdapterPort.findCapabilityById(capabilityId)
+                .flatMap(capability -> {
+                    if (capability == null) {
+                        return Mono.error(new BusinessException(
+                                "Capability not found",
+                                "CAPABILITY_NOT_FOUND",
+                                capabilityId.toString()));
+                    }
+                    // TODO: Implement logic to delete associated technologies
+                    return technologyExternalAdapterPort.deleteTechnologiesByCapabilityId(capabilityId)
+                            .thenReturn(true);
+                });
+    }
 }

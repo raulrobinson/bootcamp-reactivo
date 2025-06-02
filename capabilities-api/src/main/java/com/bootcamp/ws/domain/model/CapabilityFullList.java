@@ -14,5 +14,6 @@ import java.util.List;
 public class CapabilityFullList {
     private Long id;
     private String name;
+    private String description;
     private List<Technology> technologies;
 }

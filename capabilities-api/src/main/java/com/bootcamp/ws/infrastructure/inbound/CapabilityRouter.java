@@ -77,6 +77,21 @@ public class CapabilityRouter {
                                     @Parameter(name = "capabilityId", in = ParameterIn.PATH, description = "Capability ID", example = "1"),
                             }
                     )
+            ),
+            @RouterOperation(
+                    path = "/api/v1/capabilities/{capabilityId}",
+                    produces = "application/json",
+                    method = RequestMethod.DELETE,
+                    beanClass = CapabilityHandler.class,
+                    beanMethod = "deleteCapability",
+                    operation = @io.swagger.v3.oas.annotations.Operation(
+                            operationId = "deleteCapability",
+                            summary = "Delete a Capability",
+                            description = "Deletes a Capability by its ID from the database",
+                            parameters = {
+                                    @Parameter(name = "capabilityId", in = ParameterIn.PATH, description = "Capability ID", example = "1"),
+                            }
+                    )
             )
     })
     public RouterFunction<ServerResponse> routes(CapabilityHandler handler) {
@@ -84,6 +99,7 @@ public class CapabilityRouter {
                 .POST("/api/v1/capabilities", handler::createCapability)
                 .POST("/api/v1/capabilities/find-capabilities", handler::findCapabilitiesByIdIn)
                 .GET("/api/v1/capabilities/find-capability/{capabilityId}", handler::findCapabilityById)
+                .DELETE("/api/v1/capabilities/{capabilityId}", handler::deleteCapability)
                 .build();
     }
 }

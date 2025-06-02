@@ -89,6 +89,7 @@ public class CapabilityPersistenceAdapter implements CapabilityPersistenceAdapte
                                 return Mono.just(CapabilityFullList.builder()
                                         .id(cap.getId())
                                         .name(cap.getName())
+                                        .description(cap.getDescription())
                                         .technologies(response.getTechnologies().stream()
                                                 .map(item -> Technology.builder()
                                                         .id((long) item.getId())

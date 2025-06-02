@@ -58,7 +58,17 @@ public class CapabilityHandler {
                 .flatMap(capability -> ServerResponse.ok().bodyValue(capability))
                 .switchIfEmpty(ServerResponse.notFound().build())
                 .contextWrite(Context.of(X_MESSAGE_ID, getMessageId(request)))
-                .doOnError(error -> log.error(LIST_ERROR, error.getMessage()))
+                .doOnError(error -> log.error(FIND_ERROR, error.getMessage()))
+                .onErrorResume(exception -> globalErrorHandler.handle(exception, getMessageId(request)));
+    }
+
+    public Mono<ServerResponse> deleteCapability(ServerRequest request) {
+        Long capabilityId = Long.valueOf(request.pathVariable("capabilityId"));
+        return capabilityServicePort.deleteCapability(capabilityId)
+                .flatMap(deleted -> ServerResponse.ok().bodyValue(deleted))
+                .switchIfEmpty(ServerResponse.notFound().build())
+                .contextWrite(Context.of(X_MESSAGE_ID, getMessageId(request)))
+                .doOnError(error -> log.error(DELETE_ERROR, error.getMessage()))
                 .onErrorResume(exception -> globalErrorHandler.handle(exception, getMessageId(request)));
     }
 }

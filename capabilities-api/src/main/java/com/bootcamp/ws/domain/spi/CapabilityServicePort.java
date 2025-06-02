@@ -12,4 +12,6 @@ public interface CapabilityServicePort {
     Flux<CapabilityFullList> findCapabilitiesByIdIn(List<Long> ids);
 
     Mono<CapabilityFullList> findCapabilityById(Long id);
+
+    Mono<Boolean> deleteCapability(Long capabilityId);
 }
