@@ -68,4 +68,14 @@ public class TechnologyHandler {
                 .doOnError(error -> log.error(FIND_ASSOC_TECHS_ERROR, error.getMessage()))
                 .onErrorResume(error -> globalErrorHandler.handle(error, getMessageId(request)));
     }
+
+    public Mono<ServerResponse> deleteAssocTechnologiesByCapabilityId(ServerRequest request) {
+        Long capabilityId = Long.parseLong(request.pathVariable("capabilityId"));
+        return servicePort.deleteAssocTechnologiesByCapabilityId(capabilityId)
+                .flatMap(deleted -> ServerResponse.accepted().bodyValue(deleted))
+                .switchIfEmpty(ServerResponse.notFound().build())
+                .contextWrite(Context.of(X_MESSAGE_ID, getMessageId(request)))
+                .doOnError(error -> log.error(DELETE_ASSOC_TECHS_ERROR, error.getMessage()))
+                .onErrorResume(exception -> globalErrorHandler.handle(exception, getMessageId(request)));
+    }
 }

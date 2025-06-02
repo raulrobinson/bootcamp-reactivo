@@ -52,4 +52,12 @@ public class TechnologyEntityMapper {
                         .build())
                 .toList();
     }
+
+    public TechnologyCapability toTechnologyCapabilityDomainFromEntity(TechnologyCapabilityEntity entity) {
+        if (entity == null) return null;
+        return TechnologyCapability.builder()
+                .technologyId(entity.getTechnologyId())
+                .capabilityId(entity.getCapabilityId())
+                .build();
+    }
 }
