@@ -13,4 +13,6 @@ public interface TechnologyExternalAdapterPort {
     Mono<List<Technology>> findTechnologiesByIdIn(ExistsTechnologiesDto dto);
     Mono<List<TechnologyCapability>> associateTechnologies(TechnologyAssociateTechnologies request);
     Mono<Response> findAssociatesTechsByCapId(Long capabilityId);
+
+    Mono<Boolean> deleteAssocTechnologiesByCapabilityId(Long capabilityId);
 }

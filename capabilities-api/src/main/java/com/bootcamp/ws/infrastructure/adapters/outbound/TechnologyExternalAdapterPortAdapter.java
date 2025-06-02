@@ -53,4 +53,13 @@ public class TechnologyExternalAdapterPortAdapter implements TechnologyExternalA
                 .bodyToMono(Response.class)
                 .onErrorResume(throwable -> Mono.error(new ProcessorException(TechnicalMessage.INTERNAL_ERROR_IN_ADAPTERS, throwable)));
     }
+
+    @Override
+    public Mono<Boolean> deleteAssocTechnologiesByCapabilityId(Long capabilityId) {
+        return client.delete()
+                .uri(serviceUrl + "/delete-assoc/{capabilityId}", capabilityId)
+                .retrieve()
+                .bodyToMono(Boolean.class)
+                .onErrorResume(throwable -> Mono.error(new ProcessorException(TechnicalMessage.INTERNAL_ERROR_IN_ADAPTERS, throwable)));
+    }
 }
