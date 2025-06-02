@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface CapabilityServicePort {
     Mono<Capability> createCapability(Capability request);
+
     Flux<CapabilityFullList> findCapabilitiesByIdIn(List<Long> ids);
 
     Mono<CapabilityFullList> findCapabilityById(Long id);
