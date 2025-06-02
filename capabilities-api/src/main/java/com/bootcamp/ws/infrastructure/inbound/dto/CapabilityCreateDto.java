@@ -1,4 +1,4 @@
-package com.bootcamp.ws.infrastructure.inbound.dto.request;
+package com.bootcamp.ws.infrastructure.inbound.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;

@@ -1,4 +1,4 @@
-package com.bootcamp.ws.infrastructure.adapters.outbound;
+package com.bootcamp.ws.domain.dto;
 
 import lombok.Data;
 
