@@ -8,7 +8,7 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 public interface CapabilityPersistenceAdapterPort {
-    Flux<Capability> findAllCapabilitiesByIds(List<Long> req);
+    Flux<CapabilityFullList> findAllCapabilitiesByIds(List<Long> req);
 
 //    Mono<List<FindAssociatesTechsByCapIdResponseDto>> findAssociatesTechsByCapId(Long capabilityId);
 //    Flux<Capability> findCapabilitiesByIdIn(List<Long> req);

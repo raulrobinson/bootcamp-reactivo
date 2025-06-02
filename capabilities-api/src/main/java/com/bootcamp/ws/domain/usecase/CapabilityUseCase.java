@@ -36,7 +36,7 @@ public class CapabilityUseCase implements CapabilityServicePort {
     }
 
     @Override
-    public Flux<Capability> findCapabilitiesByIdIn(List<Long> longs) {
+    public Flux<CapabilityFullList> findCapabilitiesByIdIn(List<Long> longs) {
         return capabilityPersistenceAdapterPort.findAllCapabilitiesByIds(longs)
                 .flatMap(capabilities -> {
                     if (capabilities == null) {

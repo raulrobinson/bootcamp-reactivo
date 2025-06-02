@@ -31,9 +31,10 @@ public class CapabilityPersistenceAdapter implements CapabilityPersistenceAdapte
     private final CapabilityEntityMapper mapper;
 
     @Override
-    public Flux<Capability> findAllCapabilitiesByIds(List<Long> req) {
-        return capabilityRepository.findAllById(req)
-                .map(mapper::toCapabilityDomainFromEntity);
+    public Flux<CapabilityFullList> findAllCapabilitiesByIds(List<Long> req) {
+        // 1. Iterate over the list of IDs and find each capability by ID
+        return Flux.fromIterable(req)
+                .flatMap(this::findCapabilityById);
     }
 
     @Override
@@ -44,41 +45,36 @@ public class CapabilityPersistenceAdapter implements CapabilityPersistenceAdapte
     @Override
     public Mono<Capability> createCapability(Capability request) {
 
-        ExistsTechnologiesDto technologiesIds = ExistsTechnologiesDto.builder()
-                .technologiesIds(request.getTechnologyIds())
-                .build();
-
-        return technologyExternalAdapterPort.findTechnologiesByIdIn(technologiesIds)
+        // Paso 1: Buscar las tecnologías por ID
+        return technologyExternalAdapterPort.findTechnologiesByIdIn(ExistsTechnologiesDto.builder()
+                        .technologiesIds(request.getTechnologyIds())
+                        .build())
                 .switchIfEmpty(Mono.error(new ProcessorException(TechnicalMessage.INVALID_REQUEST)))
                 .flatMap(validas -> {
 
-                    // Paso 2: Crear entidad de dominio
-                    Capability capability = Capability.builder()
-                            .name(request.getName())
-                            .description(request.getDescription())
-                            .technologyIds(request.getTechnologyIds())
-                            .build();
-
-                    // Paso 3: Guardar la capacidad
-                    return capabilityRepository.save(mapper.toCapabilityEntityFromDomain(capability))
+                    // Paso 2: Guardar la capacidad con la entidad de dominio
+                    return capabilityRepository.save(mapper.toCapabilityEntityFromDomain(Capability.builder()
+                                    .name(request.getName())
+                                    .description(request.getDescription())
+                                    .technologyIds(request.getTechnologyIds())
+                                    .build()))
                             .flatMap(savedCap -> {
 
-                                // Paso 4: Asociar tecnologías con la capacidad
-                                TechnologyAssociateTechnologies associateRequest = TechnologyAssociateTechnologies.builder()
-                                        .capabilityId(savedCap.getId())
-                                        .technologiesIds(request.getTechnologyIds())
-                                        .build();
-
-                                return technologyExternalAdapterPort.associateTechnologies(associateRequest)
+                                // Paso 3: Asociar tecnologías con la capacidad
+                                return technologyExternalAdapterPort.associateTechnologies(TechnologyAssociateTechnologies.builder()
+                                                .capabilityId(savedCap.getId())
+                                                .technologiesIds(request.getTechnologyIds())
+                                                .build())
                                         .thenReturn(savedCap);
                             })
                             .map(mapper::toCapabilityDomainFromEntity);
                 })
-                .as(tx::transactional);
+                .as(tx::transactional); // 4. Asegurar que la transacción se maneje correctamente
     }
 
     @Override
     public Mono<CapabilityFullList> findCapabilityById(Long id) {
+
         // 1. Buscar la capacidad por ID
         return capabilityRepository.findById(id)
                 .flatMap(cap -> {
@@ -103,6 +99,5 @@ public class CapabilityPersistenceAdapter implements CapabilityPersistenceAdapte
                             });
                 });
     }
-
 
 }
