@@ -1,7 +1,9 @@
 package com.bootcamp.ws.infrastructure.inbound;
 
-import com.bootcamp.ws.domain.dto.request.CapabilityCreateDto;
+import com.bootcamp.ws.infrastructure.inbound.dto.request.CapabilityCreateDto;
 import com.bootcamp.ws.infrastructure.inbound.handler.CapabilityHandler;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.springdoc.core.annotations.RouterOperation;
@@ -19,13 +21,13 @@ public class CapabilityRouter {
     @Bean
     @RouterOperations({
             @RouterOperation(
-                    path = "/api/v1/capabilities/exists",
+                    path = "/api/v1/capabilities/find-capabilities",
                     produces = "application/json",
                     method = RequestMethod.POST,
                     beanClass = CapabilityHandler.class,
-                    beanMethod = "existsCapabilities",
+                    beanMethod = "findCapabilitiesByIdIn",
                     operation = @io.swagger.v3.oas.annotations.Operation(
-                            operationId = "existsCapabilities",
+                            operationId = "findCapabilitiesByIdIn",
                             summary = "Find Capabilities by IDs",
                             description = "Fetches Capabilities by their IDs from the database",
                             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -61,11 +63,43 @@ public class CapabilityRouter {
                             )
                     )
             ),
+            @RouterOperation(
+                    path = "/api/v1/capabilities/find-capability/{capabilityId}",
+                    produces = "application/json",
+                    method = RequestMethod.GET,
+                    beanClass = CapabilityHandler.class,
+                    beanMethod = "findCapabilityById",
+                    operation = @io.swagger.v3.oas.annotations.Operation(
+                            operationId = "findCapabilityById",
+                            summary = "Find Capability by ID",
+                            description = "Fetches a Capability by its ID from the database",
+                            parameters = {
+                                    @Parameter(name = "capabilityId", in = ParameterIn.PATH, description = "Capability ID", example = "1"),
+                            }
+                    )
+            ),
+            @RouterOperation(
+                    path = "/api/v1/capabilities/{capabilityId}",
+                    produces = "application/json",
+                    method = RequestMethod.DELETE,
+                    beanClass = CapabilityHandler.class,
+                    beanMethod = "deleteCapability",
+                    operation = @io.swagger.v3.oas.annotations.Operation(
+                            operationId = "deleteCapability",
+                            summary = "Delete a Capability",
+                            description = "Deletes a Capability by its ID from the database",
+                            parameters = {
+                                    @Parameter(name = "capabilityId", in = ParameterIn.PATH, description = "Capability ID", example = "1"),
+                            }
+                    )
+            )
     })
     public RouterFunction<ServerResponse> routes(CapabilityHandler handler) {
         return RouterFunctions.route()
                 .POST("/api/v1/capabilities", handler::createCapability)
-                .POST("/api/v1/capabilities/exists", handler::existsCapabilities)
+                .POST("/api/v1/capabilities/find-capabilities", handler::findCapabilitiesByIdIn)
+                .GET("/api/v1/capabilities/find-capability/{capabilityId}", handler::findCapabilityById)
+                .DELETE("/api/v1/capabilities/{capabilityId}", handler::deleteCapability)
                 .build();
     }
 }
