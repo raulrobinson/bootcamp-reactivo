@@ -16,4 +16,6 @@ public interface CapabilityPersistenceAdapterPort {
     Mono<Capability> createCapability(Capability request);
 
     Mono<CapabilityFullList> findCapabilityById(Long id);
+
+    Mono<Boolean> deleteCapability(Long capabilityId);
 }

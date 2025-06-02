@@ -101,4 +101,25 @@ public class CapabilityPersistenceAdapter implements CapabilityPersistenceAdapte
                 });
     }
 
+    @Override
+    public Mono<Boolean> deleteCapability(Long capabilityId) {
+        // 1. Buscar la capacidad por ID
+        return capabilityRepository.findById(capabilityId)
+                .flatMap(cap -> {
+                    if (cap == null) return Mono.error(new ProcessorException(TechnicalMessage.NOT_FOUND));
+
+                    // 2. Eliminar las tecnologías asociadas a la capacidad
+                    return technologyExternalAdapterPort.deleteAssocTechnologiesByCapabilityId(capabilityId)
+                            .thenReturn(true);
+                })
+                .flatMap(deleted -> {
+                    if (!deleted) return Mono.error(new ProcessorException(TechnicalMessage.NOT_FOUND));
+
+                    // 3. Eliminar la capacidad
+                    return capabilityRepository.deleteById(capabilityId)
+                            .thenReturn(true);
+                })
+                .as(tx::transactional); // 4. Asegurar que la transacción se maneje correctamente
+    }
+
 }

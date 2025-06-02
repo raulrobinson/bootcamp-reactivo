@@ -74,8 +74,9 @@ public class CapabilityUseCase implements CapabilityServicePort {
                                 capabilityId.toString()));
                     }
                     // TODO: Implement logic to delete associated technologies
-                    return technologyExternalAdapterPort.deleteTechnologiesByCapabilityId(capabilityId)
-                            .thenReturn(true);
+                    return capabilityPersistenceAdapterPort.deleteCapability(capabilityId);
+//                    return technologyExternalAdapterPort.deleteAssocTechnologiesByCapabilityId(capabilityId)
+//                            .then(capabilityPersistenceAdapterPort.deleteCapability(capabilityId));
                 });
     }
 }
