@@ -1,6 +1,6 @@
 package com.bootcamp.ws.infrastructure.inbound;
 
-import com.bootcamp.ws.infrastructure.inbound.dto.request.CapabilityCreateDto;
+import com.bootcamp.ws.infrastructure.inbound.dto.CapabilityCreateDto;
 import com.bootcamp.ws.infrastructure.inbound.handler.CapabilityHandler;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -30,6 +30,12 @@ public class CapabilityRouter {
                             operationId = "findCapabilitiesByIdIn",
                             summary = "Find Capabilities by IDs",
                             description = "Fetches Capabilities by their IDs from the database",
+                            parameters = {
+                                    @Parameter(name = "sortBy", in = ParameterIn.QUERY, description = "Field to sort by", example = "name"),
+                                    @Parameter(name = "direction", in = ParameterIn.QUERY, description = "Sort direction (asc/desc)", example = "asc"),
+                                    @Parameter(name = "page", in = ParameterIn.QUERY, description = "Page number for pagination", example = "0"),
+                                    @Parameter(name = "size", in = ParameterIn.QUERY, description = "Number of items per page", example = "10")
+                            },
                             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                                     required = true,
                                     description = "List of Capability IDs",

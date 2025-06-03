@@ -38,8 +38,14 @@ public class CapabilityHandler {
     }
 
     public Mono<ServerResponse> findCapabilitiesByIdIn(ServerRequest request) {
+        String sortBy = request.queryParam("sortBy").orElse("name");
+        String direction = request.queryParam("direction").orElse("asc");
+        int rawPage = Integer.parseInt(request.queryParam("page").orElse("0"));
+        int rawSize = Integer.parseInt(request.queryParam("size").orElse("10"));
+
         return request.bodyToMono(new ParameterizedTypeReference<List<Long>>() {})
-                .flatMapMany(capabilityServicePort::findCapabilitiesByIdIn)
+                .flatMapMany(caps  -> capabilityServicePort
+                        .findCapabilitiesByIdIn(caps, sortBy, direction, rawPage, rawSize))
                 .collectList()
                 .flatMap(technologies -> {
                     return ServerResponse.ok().bodyValue(technologies); // 200 OK con lista

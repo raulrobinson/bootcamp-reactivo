@@ -13,12 +13,14 @@ import com.bootcamp.ws.infrastructure.common.exception.ProcessorException;
 import com.bootcamp.ws.domain.model.Technology;
 import com.bootcamp.ws.domain.model.CapabilityFullList;
 import lombok.RequiredArgsConstructor;
+import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.reactive.TransactionalOperator;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,12 +31,14 @@ public class CapabilityPersistenceAdapter implements CapabilityPersistenceAdapte
     private final CapabilityBootcampRepository capabilityBootcampRepository;
     private final TechnologyExternalAdapterPort technologyExternalAdapterPort;
     private final CapabilityEntityMapper mapper;
+    private final DatabaseClient databaseClient;
 
     @Override
-    public Flux<CapabilityFullList> findAllCapabilitiesByIds(List<Long> req) {
+    public Mono<List<CapabilityFullList>> findAllCapabilitiesByIds(List<Long> req) {
         // 1. Iterate over the list of IDs and find each capability by ID
         return Flux.fromIterable(req)
-                .flatMap(this::findCapabilityById);
+                .flatMap(this::findCapabilityById)
+                .collectList();
     }
 
     @Override
@@ -113,6 +117,40 @@ public class CapabilityPersistenceAdapter implements CapabilityPersistenceAdapte
                             .thenReturn(true);
                 })
                 .as(tx::transactional); // 4. Asegurar que la transacción se maneje correctamente
+    }
+
+    @Override
+    public Mono<List<Capability>> findByIdsWithPaginationAndSorting(List<Long> ids,
+                                                                    String sortBy,
+                                                                    String direction,
+                                                                    int offset,
+                                                                    int limit) {
+        String inClause = ids.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(","));
+
+        // Sanitize sort direction
+        direction = direction.equalsIgnoreCase("desc") ? "DESC" : "ASC";
+
+        String sql = String.format(
+                "SELECT * FROM capabilities WHERE id IN (%s) ORDER BY %s %s LIMIT %d OFFSET %d",
+                inClause, sortBy, direction, limit, offset
+        );
+
+        return databaseClient.sql(sql)
+                .map(mapper::capabilityRowMapper) // tu mapper a CapabilityEntity
+                .all()
+                .collectList()
+                .flatMap(entities -> {
+                    if (entities.isEmpty()) {
+                        return Mono.error(new ProcessorException(TechnicalMessage.NOT_FOUND));
+                    }
+                    // Mapear a CapabilityFullList
+                    List<Capability> capabilities = entities.stream()
+                            .map(mapper::toCapabilityFullListFromEntity)
+                            .collect(Collectors.toList());
+                    return Mono.just(capabilities);
+                });
     }
 
 }
