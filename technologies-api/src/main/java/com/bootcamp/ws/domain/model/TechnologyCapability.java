@@ -2,8 +2,9 @@ package com.bootcamp.ws.domain.model;
 
 import lombok.*;
 
-@Data
-@Builder(toBuilder = true)
+@Getter
+@Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class TechnologyCapability {

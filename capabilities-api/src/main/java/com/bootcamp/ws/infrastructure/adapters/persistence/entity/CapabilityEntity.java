@@ -10,7 +10,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CapabilityEntity extends Auditable {
+public class CapabilityEntity {
     @Id
     private Long id;
     private String name;

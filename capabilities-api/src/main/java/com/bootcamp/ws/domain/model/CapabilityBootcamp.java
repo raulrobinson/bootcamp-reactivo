@@ -12,7 +12,5 @@ import lombok.NoArgsConstructor;
 public class CapabilityBootcamp {
     private Long capabilityId;
     private Long bootcampId;
-    private String createdAt;
-    private String updatedAt;
 }
 

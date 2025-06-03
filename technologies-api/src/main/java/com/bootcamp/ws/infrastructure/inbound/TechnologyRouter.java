@@ -1,12 +1,12 @@
 package com.bootcamp.ws.infrastructure.inbound;
 
-import com.bootcamp.ws.domain.common.ErrorDto;
-import com.bootcamp.ws.domain.dto.request.AssociateTechnologiesCreateRequestDto;
-import com.bootcamp.ws.domain.dto.request.ExistsTechnologiesRequestDto;
-import com.bootcamp.ws.domain.dto.request.TechnologyCreateRequestDto;
-import com.bootcamp.ws.domain.dto.response.AssociateTechnologiesResponseDto;
-import com.bootcamp.ws.domain.dto.response.CapabilityWithTechnologiesResponseDto;
-import com.bootcamp.ws.domain.dto.response.TechnologyResponseDto;
+import com.bootcamp.ws.infrastructure.common.handler.ErrorDTO;
+import com.bootcamp.ws.infrastructure.inbound.dto.request.AssociateTechnologiesCreateRequestDto;
+import com.bootcamp.ws.infrastructure.inbound.dto.request.ExistsTechnologiesRequestDto;
+import com.bootcamp.ws.infrastructure.inbound.dto.request.TechnologyCreateRequestDto;
+import com.bootcamp.ws.infrastructure.inbound.dto.response.AssociateTechnologiesResponseDto;
+import com.bootcamp.ws.infrastructure.inbound.dto.response.TechnologyResponseDto;
+import com.bootcamp.ws.infrastructure.inbound.dto.response.doc.CapabilityWithTechnologiesResponseDto;
 import com.bootcamp.ws.infrastructure.inbound.handler.TechnologyHandler;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -25,13 +25,13 @@ public class TechnologyRouter {
     @Bean
     @RouterOperations({
             @RouterOperation(
-                    path = "/api/v1/technologies/exists",
+                    path = "/api/v1/technologies/find-technologies",
                     produces = "application/json",
                     method = RequestMethod.POST,
                     beanClass = TechnologyHandler.class,
-                    beanMethod = "existsTechnologies",
+                    beanMethod = "findTechnologiesByIdIn",
                     operation = @io.swagger.v3.oas.annotations.Operation(
-                            operationId = "existsTechnologies",
+                            operationId = "findTechnologiesByIdIn",
                             summary = "Find technologies by IDs",
                             description = "Fetches technologies by their IDs from the database",
                             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -57,21 +57,27 @@ public class TechnologyRouter {
                                             responseCode = "404", description = "Not Found",
                                             content = @io.swagger.v3.oas.annotations.media.Content(
                                                     mediaType = "application/json",
-                                                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDto.class)
+                                                    array = @io.swagger.v3.oas.annotations.media.ArraySchema(
+                                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDTO.class)
+                                                    )
                                             )
                                     ),
                                     @io.swagger.v3.oas.annotations.responses.ApiResponse(
                                             responseCode = "400", description = "Bad Request",
                                             content = @io.swagger.v3.oas.annotations.media.Content(
                                                     mediaType = "application/json",
-                                                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDto.class)
+                                                    array = @io.swagger.v3.oas.annotations.media.ArraySchema(
+                                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDTO.class)
+                                                    )
                                             )
                                     ),
                                     @io.swagger.v3.oas.annotations.responses.ApiResponse(
                                             responseCode = "500", description = "Internal Server Error",
                                             content = @io.swagger.v3.oas.annotations.media.Content(
                                                     mediaType = "application/json",
-                                                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDto.class)
+                                                    array = @io.swagger.v3.oas.annotations.media.ArraySchema(
+                                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDTO.class)
+                                                    )
                                             )
                                     )
                             }
@@ -109,7 +115,9 @@ public class TechnologyRouter {
                                             description = "Bad Request",
                                             content = @io.swagger.v3.oas.annotations.media.Content(
                                                     mediaType = "application/json",
-                                                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDto.class)
+                                                    array = @io.swagger.v3.oas.annotations.media.ArraySchema(
+                                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDTO.class)
+                                                    )
                                             )
                                     ),
                                     @io.swagger.v3.oas.annotations.responses.ApiResponse(
@@ -117,7 +125,9 @@ public class TechnologyRouter {
                                             description = "Conflict",
                                             content = @io.swagger.v3.oas.annotations.media.Content(
                                                     mediaType = "application/json",
-                                                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDto.class)
+                                                    array = @io.swagger.v3.oas.annotations.media.ArraySchema(
+                                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDTO.class)
+                                                    )
                                             )
                                     ),
                                     @io.swagger.v3.oas.annotations.responses.ApiResponse(
@@ -125,7 +135,9 @@ public class TechnologyRouter {
                                             description = "Internal Server Error",
                                             content = @io.swagger.v3.oas.annotations.media.Content(
                                                     mediaType = "application/json",
-                                                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDto.class)
+                                                    array = @io.swagger.v3.oas.annotations.media.ArraySchema(
+                                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDTO.class)
+                                                    )
                                             )
                                     )
                             }
@@ -162,14 +174,18 @@ public class TechnologyRouter {
                                             responseCode = "400", description = "Bad Request",
                                             content = @io.swagger.v3.oas.annotations.media.Content(
                                                     mediaType = "application/json",
-                                                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDto.class)
+                                                    array = @io.swagger.v3.oas.annotations.media.ArraySchema(
+                                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDTO.class)
+                                                    )
                                             )
                                     ),
                                     @io.swagger.v3.oas.annotations.responses.ApiResponse(
                                             responseCode = "500", description = "Internal Server Error",
                                             content = @io.swagger.v3.oas.annotations.media.Content(
                                                     mediaType = "application/json",
-                                                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDto.class)
+                                                    array = @io.swagger.v3.oas.annotations.media.ArraySchema(
+                                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDTO.class)
+                                                    )
                                             )
                                     )
                             }
@@ -203,33 +219,79 @@ public class TechnologyRouter {
                                             responseCode = "404", description = "Not Found",
                                             content = @io.swagger.v3.oas.annotations.media.Content(
                                                     mediaType = "application/json",
-                                                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDto.class)
+                                                    array = @io.swagger.v3.oas.annotations.media.ArraySchema(
+                                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDTO.class)
+                                                    )
                                             )
                                     ),
                                     @io.swagger.v3.oas.annotations.responses.ApiResponse(
                                             responseCode = "400", description = "Bad Request",
                                             content = @io.swagger.v3.oas.annotations.media.Content(
                                                     mediaType = "application/json",
-                                                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDto.class)
+                                                    array = @io.swagger.v3.oas.annotations.media.ArraySchema(
+                                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDTO.class)
+                                                    )
                                             )
                                     ),
                                     @io.swagger.v3.oas.annotations.responses.ApiResponse(
                                             responseCode = "500", description = "Internal Server Error",
                                             content = @io.swagger.v3.oas.annotations.media.Content(
                                                     mediaType = "application/json",
-                                                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDto.class)
+                                                    array = @io.swagger.v3.oas.annotations.media.ArraySchema(
+                                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDTO.class)
+                                                    )
                                             )
                                     )
                             }
                     )
             ),
+            @RouterOperation(
+                    path = "/api/v1/technologies/delete-assoc/{capabilityId}",
+                    produces = "application/json",
+                    method = RequestMethod.DELETE,
+                    beanClass = TechnologyHandler.class,
+                    beanMethod = "deleteAssocTechnologiesByCapabilityId",
+                    operation = @io.swagger.v3.oas.annotations.Operation(
+                            operationId = "deleteAssocTechnologiesByCapabilityId",
+                            summary = "Delete technologies-capability by capability ID",
+                            description = "Deletes technologies associated with a capability ID from the database",
+                            parameters = {
+                                    @Parameter(name = "capabilityId", in = ParameterIn.PATH, description = "Capability ID", example = "1"),
+                            },
+                            responses = {
+                                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                                            responseCode = "202",
+                                            description = "Accepted"
+                                    ),
+                                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                                            responseCode = "404", description = "Not Found",
+                                            content = @io.swagger.v3.oas.annotations.media.Content(
+                                                    mediaType = "application/json",
+                                                    array = @io.swagger.v3.oas.annotations.media.ArraySchema(
+                                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDTO.class)
+                                                    )
+                                            )
+                                    ),
+                                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                                            responseCode = "500", description = "Internal Server Error",
+                                            content = @io.swagger.v3.oas.annotations.media.Content(
+                                                    mediaType = "application/json",
+                                                    array = @io.swagger.v3.oas.annotations.media.ArraySchema(
+                                                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorDTO.class)
+                                                    )
+                                            )
+                                    )
+                            }
+                    )
+            )
     })
-    public RouterFunction<ServerResponse> route(TechnologyHandler technologyHandler) {
+    public RouterFunction<ServerResponse> route(TechnologyHandler handler) {
         return RouterFunctions.route()
-                .POST("/api/v1/technologies", technologyHandler::createTechnology)
-                .POST("/api/v1/technologies/exists", technologyHandler::existsTechnologies)
-                .POST("/api/v1/technologies/associate-technologies", technologyHandler::associateTechnologies)
-                .GET("/api/v1/technologies/find-associates-technologies-by-cap-id/{capabilityId}", technologyHandler::findAssociatesTechsByCapId)
+                .POST("/api/v1/technologies", handler::createTechnology)
+                .POST("/api/v1/technologies/find-technologies", handler::findTechnologiesByIdIn)
+                .POST("/api/v1/technologies/associate-technologies", handler::associateTechnologies)
+                .GET("/api/v1/technologies/find-associates-technologies-by-cap-id/{capabilityId}", handler::findAssociatesTechsByCapId)
+                .DELETE("/api/v1/technologies/delete-assoc/{capabilityId}", handler::deleteAssocTechnologiesByCapabilityId)
                 .build();
     }
 }

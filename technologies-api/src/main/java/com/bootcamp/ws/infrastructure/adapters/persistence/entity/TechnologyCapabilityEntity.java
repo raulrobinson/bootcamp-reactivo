@@ -10,7 +10,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class TechnologyCapabilityEntity extends Auditable {
+public class TechnologyCapabilityEntity {
 
     @Column("technology_id")
     private Long technologyId;
