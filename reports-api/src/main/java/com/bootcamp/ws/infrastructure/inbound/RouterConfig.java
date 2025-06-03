@@ -15,6 +15,7 @@ public class RouterConfig {
     public RouterFunction<ServerResponse> route(ReportHandler handler) {
         return RouterFunctions
                 .route(RequestPredicates.GET("/api/v1/reports"), handler::getAll)
+                .andRoute(RequestPredicates.GET("/api/v1/reports/generate-pdf"), handler::getPdfReport)
                 .andRoute(RequestPredicates.GET("/api/v1/reports/{id}"), handler::getById)
                 .andRoute(RequestPredicates.POST("/api/v1/reports"), handler::create)
                 .andRoute(RequestPredicates.DELETE("/api/v1/reports/{id}"), handler::delete);

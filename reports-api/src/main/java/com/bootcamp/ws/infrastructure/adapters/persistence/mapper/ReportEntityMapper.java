@@ -12,8 +12,8 @@ public class ReportEntityMapper {
         return ReportEntity.builder()
                 .id(report.getId())
                 .title(report.getTitle())
-                .description(report.getDescription())
-                .status(report.getStatus())
+                .content(report.getContent())
+                .generatedAt(report.getGeneratedAt())
                 .build();
     }
 
@@ -22,8 +22,8 @@ public class ReportEntityMapper {
         return Report.builder()
                 .id(reportEntity.getId())
                 .title(reportEntity.getTitle())
-                .description(reportEntity.getDescription())
-                .status(reportEntity.getStatus())
+                .content(reportEntity.getContent())
+                .generatedAt(reportEntity.getGeneratedAt())
                 .build();
     }
 }
