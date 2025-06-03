@@ -4,6 +4,9 @@ import com.bootcamp.ws.domain.model.Report;
 import com.bootcamp.ws.infrastructure.inbound.dto.ReportDTO;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+
 @Component
 public class ReportMapper {
 
@@ -11,8 +14,8 @@ public class ReportMapper {
         if (dto == null) return null;
         return Report.builder()
                 .title(dto.getTitle())
-                .description(dto.getDescription())
-                .status(dto.getStatus())
+                .content(dto.getContent())
+                .generatedAt(LocalDateTime.from(Instant.now()))
                 .build();
     }
 }

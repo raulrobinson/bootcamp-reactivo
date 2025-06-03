@@ -7,6 +7,5 @@ import lombok.Data;
 @Builder
 public class ReportDTO {
     private String title;
-    private String description;
-    private String status;
+    private String content;
 }

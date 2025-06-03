@@ -1,17 +1,48 @@
 package com.bootcamp.ws.domain.usecase;
 
-import com.bootcamp.ws.domain.api.ReportPersistencePort;
+import com.bootcamp.ws.domain.api.*;
+import com.bootcamp.ws.domain.dto.ExistsTechnologies;
 import com.bootcamp.ws.domain.model.Report;
 import com.bootcamp.ws.domain.spi.ReportServicePort;
+import com.bootcamp.ws.infrastructure.util.PdfGenerator;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 public class ReportUseCase implements ReportServicePort {
 
     private final ReportPersistencePort reportPersistence;
+    private final BootcampExternalPort bootcampExternalPort;
+    private final CapabilityExternalPort capabilityExternalPort;
+    private final TechnologyExternalPort technologyExternalPort;
+    private final PersonExternalPort personExternalPort;
 
-    public ReportUseCase(ReportPersistencePort reportPersistence) {
+    public ReportUseCase(ReportPersistencePort reportPersistence, BootcampExternalPort bootcampExternalPort, CapabilityExternalPort capabilityExternalPort, TechnologyExternalPort technologyExternalPort, PersonExternalPort personExternalPort) {
         this.reportPersistence = reportPersistence;
+        this.bootcampExternalPort = bootcampExternalPort;
+        this.capabilityExternalPort = capabilityExternalPort;
+        this.technologyExternalPort = technologyExternalPort;
+        this.personExternalPort = personExternalPort;
+    }
+
+    public Mono<Report> generateReport(List<String> dto) {
+        List<Long> ids = dto.stream()
+                .map(Long::parseLong)
+                .toList();
+        return technologyExternalPort.findTechnologiesByIdIn(ExistsTechnologies.builder().technologiesIds(ids).build())
+                .flatMap(technologies -> {
+                    if (technologies.isEmpty()) {
+                        return Mono.error(new RuntimeException("No technologies found for the provided IDs"));
+                    }
+                    return Mono.empty();
+                });
+    }
+
+    @Override
+    public Mono<byte[]> generatePdfReport(List<String> dto) {
+        return generateReport(dto)
+                .map(report -> PdfGenerator.generatePdf(report.getTitle(), report.getContent()));
     }
 
     @Override
