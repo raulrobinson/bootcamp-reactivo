@@ -1,23 +1,22 @@
 package com.bootcamp.ws.domain.api;
 
-import com.bootcamp.ws.domain.dto.request.AssociateTechnologiesCreateRequestDto;
-import com.bootcamp.ws.domain.dto.request.ExistsTechnologiesRequestDto;
-import com.bootcamp.ws.domain.dto.request.TechnologyCreateRequestDto;
-import com.bootcamp.ws.domain.model.TechnologyCapability;
 import com.bootcamp.ws.domain.model.Technology;
+import com.bootcamp.ws.domain.model.TechnologyCapability;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
 
 public interface TechnologyAdapterPort {
-    Mono<Technology> createTechnology(TechnologyCreateRequestDto technologyEntity);
+    Mono<Technology> createTechnology(Technology request);
     Mono<Boolean> existsByName(String name);
-    Flux<Technology> existsTechnologies(ExistsTechnologiesRequestDto dto);
-    // ------------------ devolver lista de tecnologias (con id y nombre)
+    Flux<Technology> findTechnologiesByIdIn(List<Long> technologiesIds);
     Flux<Technology> findTechnologiesByIds(List<Long> technologiesIds);
-    // ------------------
-    Mono<List<TechnologyCapability>> associateTechnologies(AssociateTechnologiesCreateRequestDto dto);
-    Mono<List<TechnologyCapability>> findAllByCapabilityId(Long capabilityId);
+    Flux<TechnologyCapability> associateTechnologies(Long capabilityId, List<Long> technologiesIds);
+    Flux<TechnologyCapability> findAllByCapabilityId(Long capabilityId);
     Mono<Boolean> existsByCapabilityId(Long capabilityId);
+
+    Mono<TechnologyCapability> findCapabilityById(Long capabilityId);
+
+    Mono<Boolean> deleteAssocTechnologiesByCapabilityId(Long capabilityId);
 }
